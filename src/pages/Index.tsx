@@ -623,6 +623,7 @@ export default function Index() {
                   "Is per-driver EAR calibration at session start acceptable for MVP, or do we need a universal model?",
                   "YOLOv5 vs YOLOv8 for compliance on Pi 4 — any performance recommendation?",
                   "Will a deep-learning fatigue model beat EAR/MAR/PERCLOS enough to justify extra complexity on Raspberry Pi 4?",
+                  "For smoking detection, should we stay landmark-based or train a dedicated model, given the very limited driver-smoking dataset?",
                 ].map((q, i) => (
                   <div key={i} style={{ borderLeft: "2px solid hsl(var(--border))", paddingLeft: 14, marginBottom: 16, fontSize: 13, lineHeight: 1.6 }}>
                     <span style={{ fontWeight: 600, color: "hsl(var(--primary))" }}>{i + 1}.</span> {q}
