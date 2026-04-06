@@ -2,95 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --foreground: 0 0% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: 0 0% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
+    --popover-foreground: 0 0% 10%;
+    --primary: 4 64% 47%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 97%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 4 64% 47%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
+    --border: 0 0% 91%;
+    --input: 0 0% 91%;
+    --ring: 4 64% 47%;
     --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --surface: 0 0% 97%;
+    --text-primary: 0 0% 10%;
+    --text-secondary: 0 0% 40%;
+    --text-body: 0 0% 33%;
+    --green-bg: 122 38% 93%;
+    --green-text: 122 43% 33%;
+    --orange-bg: 36 100% 94%;
+    --orange-text: 22 100% 45%;
+    --red-bg: 4 86% 96%;
+    --red-text: 4 64% 47%;
   }
 }
 
@@ -98,8 +41,203 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
+}
+
+/* Presentation styles */
+.pres-container {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+.slide {
+  height: 100vh;
+  width: 100vw;
+  scroll-snap-align: start;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.slide-inner {
+  max-width: 1100px;
+  width: 100%;
+  padding: 0 5vw;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 400ms ease-out, transform 400ms ease-out;
+}
+
+.slide-inner.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: hsl(var(--primary));
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.slide h1 {
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 300;
+  color: hsl(var(--text-primary));
+  line-height: 1.1;
+  margin: 0 0 16px;
+}
+
+.slide h2 {
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 400;
+  color: hsl(var(--text-primary));
+  line-height: 1.3;
+  margin: 0 0 20px;
+}
+
+.slide h3 {
+  font-size: 22px;
+  font-weight: 500;
+  color: hsl(var(--text-primary));
+  margin: 0 0 16px;
+}
+
+.slide p, .slide li {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: hsl(var(--text-body));
+}
+
+.formula-block {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  background: hsl(var(--surface));
+  border: 1px solid hsl(var(--border));
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin: 12px 0;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.tag-green { background: hsl(var(--green-bg)); color: hsl(var(--green-text)); }
+.tag-orange { background: hsl(var(--orange-bg)); color: hsl(var(--orange-text)); }
+.tag-red { background: hsl(var(--red-bg)); color: hsl(var(--red-text)); }
+.tag-purple { background: #f3e8fd; color: #7b2cbf; }
+
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: hsl(var(--primary));
+  z-index: 100;
+  transition: width 100ms linear;
+}
+
+.slide-counter {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: #999;
+  z-index: 100;
+}
+
+.side-dots {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 100;
+}
+
+.side-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ccc;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  transition: background 200ms;
+  position: relative;
+}
+
+.side-dot.active {
+  background: hsl(var(--primary));
+}
+
+.side-dot:hover::after {
+  content: attr(data-title);
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  font-size: 11px;
+  background: hsl(var(--text-primary));
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+}
+
+.threshold-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-left: 3px solid;
+  padding-left: 12px;
+  margin: 6px 0;
+  font-size: 14px;
+}
+
+.card {
+  background: white;
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.dark-strip {
+  background: #1a1a1a;
+  color: white;
+  padding: 24px 5vw;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+@media (max-width: 768px) {
+  .two-col { flex-direction: column !important; }
+  .two-col > * { width: 100% !important; }
+  .grid-2x3 { grid-template-columns: 1fr !important; }
+  .grid-5 { grid-template-columns: 1fr 1fr !important; }
+  .pipeline { flex-wrap: wrap; }
+  .side-dots { display: none; }
 }
