@@ -507,83 +507,188 @@ export default function Index() {
           </div>
         </section>
 
-        {/* ===== SLIDE 9 — Compliance ===== */}
+        {/* ===== SLIDE 9 — Seatbelt ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">COMPLIANCE DETECTION</p>
-            <p style={{ marginTop: -4, marginBottom: 18, fontSize: 14, color: "#777" }}>
-              Compliance is handled as a multi-signal safety layer: object detection + temporal confirmation + context checks to reduce false alarms.
+            <p className="section-label">COMPLIANCE · SEATBELT DETECTION</p>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <h2 style={{ margin: 0 }}>Seatbelt detection</h2>
+              <span className="tag tag-blue">Nearly done · Owner: Imen</span>
+            </div>
+            <p style={{ fontSize: 13, color: "#777", marginBottom: 18 }}>
+              Three configurable inference pipelines + MobileNetV3 patch classifier + temporal smoothing.
             </p>
-            <div className="two-col" style={{ display: "flex", gap: 20, marginBottom: 20 }}>
-              <div
-                className="pres-card"
-                style={{ flex: 1, cursor: "pointer" }}
-                role="button"
-                tabIndex={0}
-                onClick={() => setSeatbeltDemoOpen(true)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    setSeatbeltDemoOpen(true);
-                  }
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                  <h3 style={{ margin: 0 }}>Seatbelt detection</h3>
-                  <span className="tag tag-blue">Nearly done</span>
+            <div className="two-col" style={{ display: "flex", gap: 16, marginBottom: 14 }}>
+              {[
+                { n: "Pipeline 1", t: "YOLOv5 ROI + MobileNetV3 (or YOLOv8n classifier)", rec: false },
+                { n: "Pipeline 2", t: "MediaPipe Pose → torso crop → YOLOv8n + MobileNetV3 parallel → RANSAC diagonal-strap prior → EMA smoother", rec: true },
+                { n: "Pipeline 3", t: "Direct YOLOv8n on full frame + smoother (EMA or majority vote)", rec: false },
+              ].map((p) => (
+                <div key={p.n} className="pres-card" style={{ flex: 1, position: "relative", borderColor: p.rec ? "hsl(var(--primary))" : undefined }}>
+                  {p.rec && <span className="tag tag-red" style={{ position: "absolute", top: 12, right: 12 }}>Recommended</span>}
+                  <h3 style={{ fontSize: 14, marginBottom: 8 }}>{p.n}</h3>
+                  <p style={{ fontSize: 12, color: "#666", margin: 0 }}>{p.t}</p>
                 </div>
-                {[
-                  "Models used: YOLOv5 baseline and YOLOv8 iterations (current)",
-                  "Target: diagonal belt strap crossing shoulder/chest region",
-                  "Training mix: NCAI dataset + Roboflow in-cabin annotations",
-                  "Seatbelt confidence threshold: 0.60",
-                  "Inference guard: confidence + box stability over time",
-                  "Decision logic: no-seatbelt state must persist for 2 seconds",
-                  "Click this card to watch a 7-second classification demo",
-                ].map((t) => (
-                  <p key={t} style={{ paddingLeft: 14, borderLeft: "2px solid hsl(var(--border))", margin: "8px 0", fontSize: 13 }}>{t}</p>
-                ))}
+              ))}
+            </div>
+            <div className="two-col" style={{ display: "flex", gap: 16 }}>
+              <div className="pres-card" style={{ flex: 1, padding: "14px 16px" }}>
+                <p style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--primary))", margin: "0 0 6px" }}>Explainability</p>
+                <p style={{ margin: 0, fontSize: 13 }}>GradCAM heatmaps + confidence-gated prediction (threshold <strong>0.5</strong>).</p>
+              </div>
+              <div className="pres-card" style={{ flex: 1.4, padding: "14px 16px", background: "#fff7ed", borderColor: "#ffd6a8" }}>
+                <p style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#b45309", margin: "0 0 6px" }}>Known challenge — Dataset scarcity</p>
+                <p style={{ margin: 0, fontSize: 12, color: "#7c3a05" }}>
+                  No large peer-reviewed in-vehicle dataset. Merged Roboflow (~8K images, CC BY 4.0) has inconsistent quality and non-driver perspectives. Supplementary in-vehicle frames under consideration.
+                </p>
+              </div>
+            </div>
+            <p style={{ marginTop: 14, fontSize: 12, color: "#888", textAlign: "center" }}>
+              Click the seatbelt card on the demos slide to play the 7-second classification demo.
+            </p>
+          </div>
+        </section>
+
+        {/* ===== SLIDE 10 — Phone ===== */}
+        <section className="slide">
+          <div className="slide-inner">
+            <p className="section-label">COMPLIANCE · PHONE DETECTION</p>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <h2 style={{ margin: 0 }}>Phone usage detection</h2>
+              <span className="tag tag-blue">Owner: Yacine (Gasmi Ahmed Yassine)</span>
+            </div>
+            <p style={{ fontSize: 13, color: "#777", marginBottom: 18 }}>
+              Object detection (YOLOv10n) + MediaPipe head-pose fusion. Two-signal rule eliminates passenger-seat false positives.
+            </p>
+            <div className="two-col" style={{ display: "flex", gap: 16 }}>
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
+                <div className="pres-card" style={{ padding: "12px 14px" }}>
+                  <strong style={{ fontSize: 13 }}>Model</strong>
+                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>YOLOv10n fine-tuned on Roboflow Distracted Driver dataset (Apache 2.0, commercially safe).</p>
+                </div>
+                <div className="pres-card" style={{ padding: "12px 14px" }}>
+                  <strong style={{ fontSize: 13 }}>Export</strong>
+                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>TFLite INT8 → ~<strong>1.5 MB</strong>, <strong>14–18 FPS</strong> on Raspberry Pi 4.</p>
+                </div>
+                <div className="pres-card" style={{ padding: "12px 14px" }}>
+                  <strong style={{ fontSize: 13 }}>Training</strong>
+                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>50 epochs, AdamW, 640px, batch 16, mosaic=1.0, fliplr=0.5, hsv_v=0.4, patience=20.</p>
+                </div>
+                <div className="pres-card" style={{ padding: "12px 14px" }}>
+                  <strong style={{ fontSize: 13 }}>Evaluation</strong>
+                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>mAP@50 target ≥ <strong>75%</strong>, mAP@50-95 as secondary.</p>
+                </div>
+              </div>
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
+                <div className="pres-card" style={{ padding: "14px 16px", background: "#fff5f5", borderColor: "#ffd6d6" }}>
+                  <p style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--primary))", margin: "0 0 8px" }}>Fusion rule</p>
+                  <div className="formula-block" style={{ margin: 0, fontSize: 12 }}>
+                    phone_conf &gt; 0.35 ∧ |yaw| &gt; 15° ∧ persists &gt; 2 s
+                  </div>
+                </div>
+                <div className="pres-card" style={{ padding: "12px 14px", background: "#fff7ed", borderColor: "#ffd6a8" }}>
+                  <strong style={{ fontSize: 13, color: "#b45309" }}>Known limitations</strong>
+                  <ul style={{ margin: "6px 0 0", paddingLeft: 16, fontSize: 12, color: "#7c3a05", lineHeight: 1.6 }}>
+                    <li>IR camera not supported</li>
+                    <li>Night driving bias</li>
+                    <li>Partial occlusion</li>
+                    <li>Earpiece calls underrepresented</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== SLIDE 11 — Smoking ===== */}
+        <section className="slide">
+          <div className="slide-inner">
+            <p className="section-label">COMPLIANCE · SMOKING DETECTION</p>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <h2 style={{ margin: 0 }}>Hybrid landmark + detection-based</h2>
+              <span className="tag tag-purple">Owner: Imen</span>
+            </div>
+            <p style={{ fontSize: 13, color: "#777", marginBottom: 16 }}>
+              Two-branch architecture with score-level (late) fusion + 8-frame temporal buffer (5/8 majority vote, hysteresis).
+            </p>
+            <div className="two-col" style={{ display: "flex", gap: 16, marginBottom: 14 }}>
+              <div className="pres-card" style={{ flex: 1 }}>
+                <span className="tag tag-blue">Branch A · Landmark-based</span>
+                <h3 style={{ fontSize: 15, margin: "10px 0 6px" }}>MediaPipe Tasks API</h3>
+                <p style={{ fontSize: 12, color: "#666", margin: 0 }}>
+                  HandLandmarker, FaceLandmarker, PoseLandmarker Lite → geometric/kinematic features.
+                </p>
               </div>
               <div className="pres-card" style={{ flex: 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                  <h3 style={{ margin: 0 }}>Phone usage detection</h3>
-                  <span className="tag tag-orange">In progress</span>
-                </div>
-                {[
-                  "Baseline: COCO pre-trained class 67 (cell phone)",
-                  "Fast start without fine-tuning, then in-cabin adaptation",
-                  "Phone confidence threshold: 0.60",
-                  "Context fusion: phone box + head pose (yaw > 20°) + gaze-away",
-                  "Temporal check: continuous evidence for >= 2 seconds",
-                  "Goal: avoid false triggers from reflections or passenger devices",
-                ].map((t) => (
-                  <p key={t} style={{ paddingLeft: 14, borderLeft: "2px solid hsl(var(--border))", margin: "8px 0", fontSize: 13 }}>{t}</p>
-                ))}
+                <span className="tag tag-orange">Branch B · Detection-based</span>
+                <h3 style={{ fontSize: 15, margin: "10px 0 6px" }}>Fine-tuned YOLOv8n (best.onnx)</h3>
+                <p style={{ fontSize: 12, color: "#666", margin: 0 }}>
+                  Classes: <code>cigarette</code>, <code>cigarette_at_mouth</code>, <code>hand_holding_cigarette</code>, <code>smoke_plume</code>.
+                </p>
               </div>
             </div>
-            <div className="pres-card" style={{ background: "hsl(var(--surface))" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                <h3 style={{ margin: 0 }}>Smoking detection</h3>
-                <span className="tag tag-purple">Landmark-based</span>
-              </div>
-              <p>
-                Cigarettes are too small to detect reliably at vehicle distance on low-power hardware.
-                Instead, we use MediaPipe Hand landmarks to track hand-to-mouth behavior patterns.
-              </p>
-              <div className="formula-block" style={{ justifyContent: "flex-start", fontFamily: "'Courier New', monospace", fontSize: 14 }}>
-                hand_to_mouth_distance_px &lt; 40 for &ge; 1.0 second → alert
-              </div>
-              <p style={{ fontSize: 12, color: "#999" }}>Reuses existing MediaPipe pipeline — no additional model required</p>
-              <p style={{ fontSize: 12, color: "#999" }}>Extra rule: repeated hand-to-mouth cycles in short windows increase confidence score.</p>
+            <div className="formula-block" style={{ marginBottom: 14, fontSize: 13 }}>
+              score_final = α · score_landmark + (1 − α) · score_detection ,&nbsp; α = 0.10
             </div>
-            <div style={{ marginTop: 16, background: "#f8fafc", border: "1px solid hsl(var(--border))", borderRadius: 10, padding: "12px 16px" }}>
-              <p style={{ margin: 0, fontSize: 13, color: "#4a5568" }}>
-                Unified alert policy: detection confidence + temporal persistence + context agreement.
-                This "triple-check" design reduces false positives before raising driver alerts.
+            <div className="two-col" style={{ display: "flex", gap: 16 }}>
+              <div className="pres-card" style={{ flex: 1, padding: "12px 14px" }}>
+                <strong style={{ fontSize: 13 }}>Integration</strong>
+                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
+                  <code>DMSFusionEngine</code> with 3-tier alerts: <span className="tag tag-green">NORMAL</span> <span className="tag tag-orange">WARNING</span> <span className="tag tag-red">CRITICAL</span>
+                </p>
+              </div>
+              <div className="pres-card" style={{ flex: 1, padding: "12px 14px" }}>
+                <strong style={{ fontSize: 13, color: "#2e7d32" }}>✅ Completed</strong>
+                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
+                  Full hybrid pipeline (LandmarkExtractor, YOLODetector, HybridSmokingDetector, DMSFusionEngine), visualisation, evaluation on synthetic data with Precision/Recall/F1/confusion matrix.
+                </p>
+              </div>
+            </div>
+            <div style={{ marginTop: 14, background: "#fff5f5", border: "1px solid #ffd6d6", borderRadius: 10, padding: "12px 16px" }}>
+              <p style={{ margin: 0, fontSize: 13, color: "#8b1e1e" }}>
+                <strong>❌ Not completed:</strong> still does not work on our own model — pending real driver-smoking data and HPC training capacity.
               </p>
             </div>
           </div>
         </section>
+
+        {/* ===== SLIDE 12 — Video demos ===== */}
+        <section className="slide">
+          <div className="slide-inner">
+            <p className="section-label">VIDEO DEMONSTRATIONS</p>
+            <h2>Live module demos</h2>
+            <p style={{ fontSize: 13, color: "#777", marginBottom: 20 }}>
+              For each of the four modules — Fatigue, Phone, Smoking, Seatbelt — a short video example shows the system in action.
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
+              {[
+                { name: "Fatigue Detection", desc: "EAR / MAR / PERCLOS overlay in real time", tag: "Live", cls: "tag-green", clickable: false },
+                { name: "Phone Detection", desc: "YOLOv10n + head-pose fusion alert", tag: "Demo ready", cls: "tag-blue", clickable: false },
+                { name: "Smoking Detection", desc: "Hybrid landmark + detection two-branch", tag: "Synthetic data", cls: "tag-orange", clickable: false },
+                { name: "Seatbelt Detection", desc: "7-second classification clip — click to play", tag: "Click to play", cls: "tag-red", clickable: true },
+              ].map((m) => (
+                <div
+                  key={m.name}
+                  className="pres-card"
+                  style={{ cursor: m.clickable ? "pointer" : "default", minHeight: 140 }}
+                  onClick={() => m.clickable && setSeatbeltDemoOpen(true)}
+                  role={m.clickable ? "button" : undefined}
+                  tabIndex={m.clickable ? 0 : undefined}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                    <h3 style={{ margin: 0, fontSize: 16 }}>🎬 {m.name}</h3>
+                    <span className={`tag ${m.cls}`}>{m.tag}</span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: 13, color: "#666" }}>{m.desc}</p>
+                  <div style={{ marginTop: 12, height: 50, borderRadius: 8, background: "linear-gradient(135deg, hsl(var(--surface)), #fff)", border: "1px dashed hsl(var(--border))", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#999" }}>
+                    {m.clickable ? "▶ Inline player available" : "Video to be presented live"}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
 
         {/* ===== SLIDE 10 — Progress ===== */}
         <section className="slide">
