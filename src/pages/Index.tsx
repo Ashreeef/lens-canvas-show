@@ -19,16 +19,24 @@ const SLIDES = [
   // ── Update April 20 ──
   "Update intro",
   "Gaze redesigned",
+  "Camera mounting (critical)",
   "Seatbelt update",
   "Phone update",
   "Smoking update",
   "Video demos",
   "Overall status",
-  "Camera mounting (critical)",
-  "Resources needed (HPC)",
 ];
 
 const TOTAL = SLIDES.length;
+
+const DEMO_VIDEOS = {
+  fatigue: { title: "Fatigue module demo", src: "/fatigue_video.mp4" },
+  seatbelt: { title: "Seatbelt module demo", src: "/seatbelt_video.mp4" },
+  phone: { title: "Phone module demo", src: "/phone_video.mp4" },
+  smoking: { title: "Smoking module demo", src: "/smoking_video.mp4" },
+} as const;
+
+type DemoKey = keyof typeof DEMO_VIDEOS;
 
 function Latex({ children, display = false }: { children: string; display?: boolean }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -44,10 +52,22 @@ export default function Index() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [seatbeltDemoOpen, setSeatbeltDemoOpen] = useState(false);
-  const [seatbeltVideoState, setSeatbeltVideoState] = useState<"idle" | "loading" | "ready" | "error">("idle");
-  const [seatbeltVideoReason, setSeatbeltVideoReason] = useState("");
-  const seatbeltVideoRef = useRef<HTMLVideoElement>(null);
+  const [demoModalOpen, setDemoModalOpen] = useState(false);
+  const [activeDemoKey, setActiveDemoKey] = useState<DemoKey>("seatbelt");
+  const [demoVideoState, setDemoVideoState] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [demoVideoReason, setDemoVideoReason] = useState("");
+  const demoVideoRef = useRef<HTMLVideoElement>(null);
+
+  const openDemo = useCallback((demoKey: DemoKey) => {
+    setActiveDemoKey(demoKey);
+    setDemoModalOpen(true);
+  }, []);
+
+  const closeDemo = useCallback(() => {
+    setDemoModalOpen(false);
+  }, []);
+
+  const activeDemo = DEMO_VIDEOS[activeDemoKey];
 
   const scrollTo = useCallback((i: number) => {
     const el = containerRef.current;
@@ -72,10 +92,10 @@ export default function Index() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (seatbeltDemoOpen) {
+      if (demoModalOpen) {
         if (e.key === "Escape") {
           e.preventDefault();
-          setSeatbeltDemoOpen(false);
+          closeDemo();
         }
         return;
       }
@@ -90,7 +110,7 @@ export default function Index() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [current, scrollTo, seatbeltDemoOpen]);
+  }, [current, scrollTo, demoModalOpen, closeDemo]);
 
   useEffect(() => {
     const els = document.querySelectorAll(".slide-inner");
@@ -106,22 +126,22 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
-    if (!seatbeltDemoOpen) {
-      setSeatbeltVideoState("idle");
-      setSeatbeltVideoReason("");
+    if (!demoModalOpen) {
+      setDemoVideoState("idle");
+      setDemoVideoReason("");
       return;
     }
 
-    const video = seatbeltVideoRef.current;
+    const video = demoVideoRef.current;
     if (!video) return;
 
-    setSeatbeltVideoState("loading");
-    setSeatbeltVideoReason("");
+    setDemoVideoState("loading");
+    setDemoVideoReason("");
 
     video.currentTime = 0;
     video.play().catch(() => {
-      setSeatbeltVideoState("error");
-      setSeatbeltVideoReason("The browser blocked playback or cannot decode this video format.");
+      setDemoVideoState("error");
+      setDemoVideoReason("The browser blocked playback or cannot decode this video format.");
     });
 
     const onTimeUpdate = () => {
@@ -131,19 +151,19 @@ export default function Index() {
     };
 
     const onLoadedData = () => {
-      setSeatbeltVideoState("ready");
-      setSeatbeltVideoReason("");
+      setDemoVideoState("ready");
+      setDemoVideoReason("");
     };
 
     const onError = () => {
-      setSeatbeltVideoState("error");
-      setSeatbeltVideoReason("This file appears HEVC (hvc1), which many browsers cannot play inline.");
+      setDemoVideoState("error");
+      setDemoVideoReason("This demo video cannot be played inline in this browser (codec unsupported or file missing).");
     };
 
     const loadingTimeout = window.setTimeout(() => {
       if (video.readyState < 2) {
-        setSeatbeltVideoState("error");
-        setSeatbeltVideoReason("Video could not load for inline playback. Try opening it directly or re-exporting to H.264 (avc1).");
+        setDemoVideoState("error");
+        setDemoVideoReason("Video could not load for inline playback. Try opening it directly or re-exporting to H.264 (avc1).");
       }
     }, 2500);
 
@@ -158,7 +178,7 @@ export default function Index() {
       video.pause();
       video.currentTime = 0;
     };
-  }, [seatbeltDemoOpen]);
+  }, [demoModalOpen, activeDemoKey]);
 
   const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -395,6 +415,21 @@ export default function Index() {
                 <p style={{ fontSize: 12, color: "#999", marginBottom: 10, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase" }}>60-second rolling window</p>
                 <PerclosBar />
                 <p style={{ fontSize: 13, color: "#999", marginTop: 10 }}>PERCLOS = red segments / total ≈ 17% → alert</p>
+                <button
+                  onClick={() => openDemo("fatigue")}
+                  style={{
+                    marginTop: 10,
+                    alignSelf: "flex-start",
+                    border: "1px solid hsl(var(--border))",
+                    background: "#fff",
+                    borderRadius: 8,
+                    padding: "8px 12px",
+                    fontSize: 12,
+                    cursor: "pointer",
+                  }}
+                >
+                  Open fatigue demo
+                </button>
               </div>
             </div>
           </div>
@@ -488,11 +523,11 @@ export default function Index() {
                 style={{ flex: 1, cursor: "pointer" }}
                 role="button"
                 tabIndex={0}
-                onClick={() => setSeatbeltDemoOpen(true)}
+                onClick={() => openDemo("seatbelt")}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
-                    setSeatbeltDemoOpen(true);
+                    openDemo("seatbelt");
                   }
                 }}
               >
@@ -512,7 +547,19 @@ export default function Index() {
                   <p key={t} style={{ paddingLeft: 14, borderLeft: "2px solid hsl(var(--border))", margin: "8px 0", fontSize: 13 }}>{t}</p>
                 ))}
               </div>
-              <div className="pres-card" style={{ flex: 1 }}>
+              <div
+                className="pres-card"
+                style={{ flex: 1, cursor: "pointer" }}
+                role="button"
+                tabIndex={0}
+                onClick={() => openDemo("phone")}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    openDemo("phone");
+                  }
+                }}
+              >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
                   <h3 style={{ margin: 0 }}>Phone usage detection</h3>
                   <span className="tag tag-orange">In progress</span>
@@ -524,12 +571,25 @@ export default function Index() {
                   "Context fusion: phone box + head pose (yaw > 20°) + gaze-away",
                   "Temporal check: continuous evidence for >= 2 seconds",
                   "Goal: avoid false triggers from reflections or passenger devices",
+                  "Click this card to watch the phone demo",
                 ].map((t) => (
                   <p key={t} style={{ paddingLeft: 14, borderLeft: "2px solid hsl(var(--border))", margin: "8px 0", fontSize: 13 }}>{t}</p>
                 ))}
               </div>
             </div>
-            <div className="pres-card" style={{ background: "hsl(var(--surface))" }}>
+            <div
+              className="pres-card"
+              style={{ background: "hsl(var(--surface))", cursor: "pointer" }}
+              role="button"
+              tabIndex={0}
+              onClick={() => openDemo("smoking")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openDemo("smoking");
+                }
+              }}
+            >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
                 <h3 style={{ margin: 0 }}>Smoking detection</h3>
                 <span className="tag tag-purple">Landmark-based</span>
@@ -543,6 +603,7 @@ export default function Index() {
               </div>
               <p style={{ fontSize: 12, color: "#999" }}>Reuses existing MediaPipe pipeline — no additional model required</p>
               <p style={{ fontSize: 12, color: "#999" }}>Extra rule: repeated hand-to-mouth cycles in short windows increase confidence score.</p>
+              <p style={{ fontSize: 12, color: "#999" }}>Click this card to watch the smoking demo.</p>
             </div>
             <div style={{ marginTop: 16, background: "#f8fafc", border: "1px solid hsl(var(--border))", borderRadius: 10, padding: "12px 16px" }}>
               <p style={{ margin: 0, fontSize: 13, color: "#4a5568" }}>
@@ -689,7 +750,7 @@ export default function Index() {
                 { icon: "🛡", t: "Seatbelt — 3 pipelines", d: "Pipeline 2 (Pose+YOLOv8n+RANSAC) recommended" },
                 { icon: "📱", t: "Phone — YOLOv10n + fusion", d: "TFLite INT8 ~1.5 MB, 14–18 FPS on Pi 4" },
                 { icon: "🚬", t: "Smoking — hybrid pipeline", d: "Two-branch fusion built; own model not yet working" },
-                { icon: "🎬", t: "Video demos for each module", d: "Fatigue · Phone · Smoking · Seatbelt" },
+                { icon: "▶", t: "Video demos for each module", d: "Fatigue · Phone · Smoking · Seatbelt" },
                 { icon: "⚠️", t: "Critical open problem", d: "Camera mounting offset variation" },
               ].map((c) => (
                 <div key={c.t} className="pres-card" style={{ textAlign: "left", padding: "14px 16px" }}>
@@ -761,6 +822,12 @@ export default function Index() {
                 <div className="threshold-row" style={{ borderColor: "#2e7d32" }}>
                   <span className="tag tag-green">Mirror checks</span> &lt; 2 s no longer trigger false alerts
                 </div>
+                <div className="pres-card" style={{ marginTop: 12, padding: "10px 12px", background: "#fff7ed", borderColor: "#ffd6a8" }}>
+                  <p style={{ margin: 0, fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#b45309" }}>Current limitation</p>
+                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#7c3a05" }}>
+                    Offset-robust validation still needs larger simulated runs and retraining sweeps; this is currently blocked by limited HPC access.
+                  </p>
+                </div>
               </div>
             </div>
             <div style={{ marginTop: 16, background: "hsl(var(--surface))", borderRadius: 10, padding: "10px 16px", fontSize: 12, color: "#555", borderLeft: "3px solid #2e7d32" }}>
@@ -769,14 +836,69 @@ export default function Index() {
           </div>
         </section>
 
-        {/* ===== UPDATE 3 — Seatbelt update ===== */}
+        {/* ===== UPDATE 3 — Critical: Camera mounting ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label" style={{ color: "hsl(var(--primary))" }}>UPDATE · SEATBELT (Owner: Imen)</p>
+            <p className="section-label" style={{ color: "hsl(var(--primary))" }}>UPDATE · MAIN CHALLENGE (SUPERVISOR)</p>
+            <h2>Camera mounting offset variation</h2>
+            <div className="two-col" style={{ display: "flex", gap: 36, marginTop: 18, alignItems: "flex-start" }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ background: "#fff5f5", border: "1px solid #ffd6d6", borderRadius: 12, padding: "18px 22px" }}>
+                  <p style={{ margin: 0, fontSize: 14, color: "#1a1a1a", lineHeight: 1.7 }}>
+                    The system currently works only for a camera mounting offset of <strong>(0, 0)</strong>.
+                    In real vehicles the camera will <strong>not</strong> always be installed like this, and mounting may vary from car to car.
+                  </p>
+                  <p style={{ margin: "12px 0 0", fontSize: 14, color: "#8b1e1e", fontWeight: 600 }}>
+                    The system must be dynamic to mounting offset.
+                  </p>
+                </div>
+                <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10 }}>
+                  {[
+                    "Affects: head pose accuracy, gaze direction, ROI cropping for compliance",
+                    "Cause: solvePnP assumes a fixed extrinsic camera placement",
+                    "Required: per-vehicle (or in-session) extrinsic auto-calibration",
+                    "Next step: larger calibration sweeps and simulation runs (HPC-dependent)",
+                  ].map((t) => (
+                    <p key={t} style={{ margin: 0, paddingLeft: 14, borderLeft: "2px solid hsl(var(--primary))", fontSize: 13 }}>{t}</p>
+                  ))}
+                </div>
+              </div>
+              <div style={{ flex: 1, background: "hsl(var(--surface))", borderRadius: 14, border: "1px solid hsl(var(--border))", padding: 20 }}>
+                <p style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "#666", margin: "0 0 14px", fontWeight: 600 }}>Mounting variation — illustration</p>
+                <svg viewBox="0 0 320 200" style={{ width: "100%", height: "auto" }}>
+                  <rect x="20" y="40" width="280" height="130" rx="14" fill="#fff" stroke="#ddd" />
+                  <circle cx="160" cy="105" r="22" fill="#fde2e2" stroke="#c0392b" />
+                  <text x="160" y="110" textAnchor="middle" fontSize="11" fill="#c0392b" fontWeight="600">Driver</text>
+                  <circle cx="160" cy="40" r="8" fill="#c0392b" />
+                  <text x="160" y="32" textAnchor="middle" fontSize="9" fill="#c0392b">cam (0,0) ✓</text>
+                  <circle cx="60" cy="40" r="8" fill="#999" />
+                  <text x="60" y="32" textAnchor="middle" fontSize="9" fill="#666">cam offset ✗</text>
+                  <circle cx="260" cy="40" r="8" fill="#999" />
+                  <text x="260" y="32" textAnchor="middle" fontSize="9" fill="#666">cam offset ✗</text>
+                  <line x1="60" y1="48" x2="150" y2="95" stroke="#999" strokeDasharray="3,3" />
+                  <line x1="160" y1="48" x2="160" y2="85" stroke="#c0392b" strokeWidth="2" />
+                  <line x1="260" y1="48" x2="170" y2="95" stroke="#999" strokeDasharray="3,3" />
+                </svg>
+                <p style={{ marginTop: 10, fontSize: 11, color: "#999", textAlign: "center" }}>Only the centered mount is currently supported.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== UPDATE 4 — Seatbelt update ===== */}
+        <section className="slide">
+          <div className="slide-inner">
+            <p className="section-label" style={{ color: "hsl(var(--primary))" }}>UPDATE · SEATBELT</p>
             <h2>Seatbelt — three configurable pipelines</h2>
             <p style={{ fontSize: 13, color: "#777", marginBottom: 18 }}>
               Three configurable inference pipelines + MobileNetV3 patch classifier + temporal smoothing.
             </p>
+            <button
+              onClick={() => openDemo("seatbelt")}
+              style={{ border: "1px solid hsl(var(--border))", background: "#fff", borderRadius: 8, padding: "8px 12px", fontSize: 12, cursor: "pointer", marginBottom: 14 }}
+            >
+              Open seatbelt demo
+            </button>
             <div className="two-col" style={{ display: "flex", gap: 16, marginBottom: 14 }}>
               {[
                 { n: "Pipeline 1", t: "YOLOv5 ROI + MobileNetV3 (or YOLOv8n classifier)", rec: false },
@@ -800,19 +922,28 @@ export default function Index() {
                 <p style={{ margin: 0, fontSize: 12, color: "#7c3a05" }}>
                   No large peer-reviewed in-vehicle dataset. Merged Roboflow (~8K images, CC BY 4.0) has inconsistent quality and non-driver perspectives. Supplementary in-vehicle frames under consideration.
                 </p>
+                <p style={{ margin: "8px 0 0", fontSize: 12, color: "#7c3a05" }}>
+                  Larger augmentation and ablation experiments are pending reliable HPC access.
+                </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ===== UPDATE 4 — Phone update ===== */}
+        {/* ===== UPDATE 5 — Phone update ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label" style={{ color: "hsl(var(--primary))" }}>UPDATE · PHONE (Owner: Yacine — Gasmi Ahmed Yassine)</p>
+            <p className="section-label" style={{ color: "hsl(var(--primary))" }}>UPDATE · PHONE</p>
             <h2>Phone — YOLOv10n + head-pose fusion</h2>
             <p style={{ fontSize: 13, color: "#777", marginBottom: 18 }}>
               Two-signal fusion eliminates passenger-seat false positives.
             </p>
+            <button
+              onClick={() => openDemo("phone")}
+              style={{ border: "1px solid hsl(var(--border))", background: "#fff", borderRadius: 8, padding: "8px 12px", fontSize: 12, cursor: "pointer", marginBottom: 14 }}
+            >
+              Open phone demo
+            </button>
             <div className="two-col" style={{ display: "flex", gap: 16 }}>
               <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
                 <div className="pres-card" style={{ padding: "12px 14px" }}>
@@ -846,6 +977,7 @@ export default function Index() {
                     <li>Night driving bias</li>
                     <li>Partial occlusion</li>
                     <li>Earpiece calls underrepresented</li>
+                    <li>Large-scale retraining and nighttime tuning pending HPC capacity</li>
                   </ul>
                 </div>
               </div>
@@ -853,14 +985,20 @@ export default function Index() {
           </div>
         </section>
 
-        {/* ===== UPDATE 5 — Smoking update ===== */}
+        {/* ===== UPDATE 6 — Smoking update ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label" style={{ color: "hsl(var(--primary))" }}>UPDATE · SMOKING (Owner: Imen)</p>
+            <p className="section-label" style={{ color: "hsl(var(--primary))" }}>UPDATE · SMOKING</p>
             <h2>Hybrid landmark + detection pipeline</h2>
             <p style={{ fontSize: 13, color: "#777", marginBottom: 16 }}>
               Two-branch architecture with score-level (late) fusion + 8-frame temporal buffer (5/8 majority vote, hysteresis).
             </p>
+            <button
+              onClick={() => openDemo("smoking")}
+              style={{ border: "1px solid hsl(var(--border))", background: "#fff", borderRadius: 8, padding: "8px 12px", fontSize: 12, cursor: "pointer", marginBottom: 14 }}
+            >
+              Open smoking demo
+            </button>
             <div className="two-col" style={{ display: "flex", gap: 16, marginBottom: 14 }}>
               <div className="pres-card" style={{ flex: 1 }}>
                 <span className="tag tag-blue">Branch A · Landmark-based</span>
@@ -902,7 +1040,7 @@ export default function Index() {
           </div>
         </section>
 
-        {/* ===== UPDATE 6 — Video demos ===== */}
+        {/* ===== UPDATE 7 — Video demos ===== */}
         <section className="slide">
           <div className="slide-inner">
             <p className="section-label" style={{ color: "hsl(var(--primary))" }}>UPDATE · VIDEO DEMONSTRATIONS</p>
@@ -911,27 +1049,33 @@ export default function Index() {
               For each of the four modules — Fatigue, Phone, Smoking, Seatbelt — a short video example shows the system in action.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
-              {[
-                { name: "Fatigue Detection", desc: "EAR / MAR / PERCLOS overlay in real time", tag: "Live", cls: "tag-green", clickable: false },
-                { name: "Phone Detection", desc: "YOLOv10n + head-pose fusion alert", tag: "Demo ready", cls: "tag-blue", clickable: false },
-                { name: "Smoking Detection", desc: "Hybrid landmark + detection two-branch", tag: "Synthetic data", cls: "tag-orange", clickable: false },
-                { name: "Seatbelt Detection", desc: "7-second classification clip — click to play", tag: "Click to play", cls: "tag-red", clickable: true },
-              ].map((m) => (
+              {([
+                { name: "Fatigue Detection", desc: "EAR / MAR / PERCLOS overlay in real time", tag: "Click to play", cls: "tag-green", demoKey: "fatigue" },
+                { name: "Phone Detection", desc: "YOLOv10n + head-pose fusion alert", tag: "Click to play", cls: "tag-blue", demoKey: "phone" },
+                { name: "Smoking Detection", desc: "Hybrid landmark + detection two-branch", tag: "Click to play", cls: "tag-orange", demoKey: "smoking" },
+                { name: "Seatbelt Detection", desc: "7-second classification clip", tag: "Click to play", cls: "tag-red", demoKey: "seatbelt" },
+              ] as const).map((m) => (
                 <div
                   key={m.name}
                   className="pres-card"
-                  style={{ cursor: m.clickable ? "pointer" : "default", minHeight: 140 }}
-                  onClick={() => m.clickable && setSeatbeltDemoOpen(true)}
-                  role={m.clickable ? "button" : undefined}
-                  tabIndex={m.clickable ? 0 : undefined}
+                  style={{ cursor: "pointer", minHeight: 140 }}
+                  onClick={() => openDemo(m.demoKey)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      openDemo(m.demoKey);
+                    }
+                  }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                    <h3 style={{ margin: 0, fontSize: 16 }}>🎬 {m.name}</h3>
+                    <h3 style={{ margin: 0, fontSize: 16 }}>{m.name}</h3>
                     <span className={`tag ${m.cls}`}>{m.tag}</span>
                   </div>
                   <p style={{ margin: 0, fontSize: 13, color: "#666" }}>{m.desc}</p>
                   <div style={{ marginTop: 12, height: 50, borderRadius: 8, background: "linear-gradient(135deg, hsl(var(--surface)), #fff)", border: "1px dashed hsl(var(--border))", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#999" }}>
-                    {m.clickable ? "▶ Inline player available" : "Video to be presented live"}
+                    ▶ Click to play inline demo
                   </div>
                 </div>
               ))}
@@ -939,7 +1083,7 @@ export default function Index() {
           </div>
         </section>
 
-        {/* ===== UPDATE 7 — Overall status ===== */}
+        {/* ===== UPDATE 8 — Overall status ===== */}
         <section className="slide">
           <div className="slide-inner">
             <p className="section-label" style={{ color: "hsl(var(--primary))" }}>UPDATE · OVERALL STATUS</p>
@@ -957,89 +1101,11 @@ export default function Index() {
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: 22, background: "#fff5f5", borderLeft: "4px solid hsl(var(--primary))", borderRadius: 10, padding: "16px 20px" }}>
-              <p style={{ margin: 0, fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--primary))", fontWeight: 600 }}>⚠ Main challenge now (signaled by supervisor)</p>
-              <p style={{ margin: "8px 0 0", fontSize: 14, color: "#1a1a1a", lineHeight: 1.6 }}>
-                The system currently works only for a camera mounting offset of <strong>(0, 0)</strong>. In real vehicles the camera will not always be installed like this, and mounting may vary from car to car.
-                <br />
-                <strong>The system must be dynamic to mounting offset</strong> — this is a crucial limitation we are still solving.
+            <div style={{ marginTop: 22, background: "#fff7ed", borderLeft: "4px solid #f59e0b", borderRadius: 10, padding: "16px 20px" }}>
+              <p style={{ margin: 0, fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", color: "#b45309", fontWeight: 600 }}>Cross-module limitation card</p>
+              <p style={{ margin: "8px 0 0", fontSize: 14, color: "#7c2d12", lineHeight: 1.6 }}>
+                Large retraining and robustness studies across Seatbelt, Phone, Smoking and offset-generalization are constrained by limited HPC availability.
               </p>
-            </div>
-          </div>
-        </section>
-
-        {/* ===== UPDATE 8 — Critical: Camera mounting ===== */}
-        <section className="slide">
-          <div className="slide-inner">
-            <p className="section-label" style={{ color: "hsl(var(--primary))" }}>UPDATE · ⚠ CRITICAL OPEN PROBLEM</p>
-            <h2>Camera mounting offset variation</h2>
-            <div className="two-col" style={{ display: "flex", gap: 36, marginTop: 18, alignItems: "flex-start" }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ background: "#fff5f5", border: "1px solid #ffd6d6", borderRadius: 12, padding: "18px 22px" }}>
-                  <p style={{ margin: 0, fontSize: 14, color: "#1a1a1a", lineHeight: 1.7 }}>
-                    The system currently works only for a camera mounting offset of <strong>(0, 0)</strong>.
-                    In real vehicles the camera will <strong>not</strong> always be installed like this, and mounting may vary from car to car.
-                  </p>
-                  <p style={{ margin: "12px 0 0", fontSize: 14, color: "#8b1e1e", fontWeight: 600 }}>
-                    The system must be dynamic to mounting offset.
-                  </p>
-                </div>
-                <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10 }}>
-                  {[
-                    "Affects: head pose accuracy, gaze direction, ROI cropping for compliance",
-                    "Cause: solvePnP assumes a fixed extrinsic camera placement",
-                    "Required: per-vehicle (or in-session) extrinsic auto-calibration",
-                    "Status: still looking for a solution",
-                  ].map((t) => (
-                    <p key={t} style={{ margin: 0, paddingLeft: 14, borderLeft: "2px solid hsl(var(--primary))", fontSize: 13 }}>{t}</p>
-                  ))}
-                </div>
-              </div>
-              <div style={{ flex: 1, background: "hsl(var(--surface))", borderRadius: 14, border: "1px solid hsl(var(--border))", padding: 20 }}>
-                <p style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "#666", margin: "0 0 14px", fontWeight: 600 }}>Mounting variation — illustration</p>
-                <svg viewBox="0 0 320 200" style={{ width: "100%", height: "auto" }}>
-                  <rect x="20" y="40" width="280" height="130" rx="14" fill="#fff" stroke="#ddd" />
-                  <circle cx="160" cy="105" r="22" fill="#fde2e2" stroke="#c0392b" />
-                  <text x="160" y="110" textAnchor="middle" fontSize="11" fill="#c0392b" fontWeight="600">Driver</text>
-                  <circle cx="160" cy="40" r="8" fill="#c0392b" />
-                  <text x="160" y="32" textAnchor="middle" fontSize="9" fill="#c0392b">cam (0,0) ✓</text>
-                  <circle cx="60" cy="40" r="8" fill="#999" />
-                  <text x="60" y="32" textAnchor="middle" fontSize="9" fill="#666">cam offset ✗</text>
-                  <circle cx="260" cy="40" r="8" fill="#999" />
-                  <text x="260" y="32" textAnchor="middle" fontSize="9" fill="#666">cam offset ✗</text>
-                  <line x1="60" y1="48" x2="150" y2="95" stroke="#999" strokeDasharray="3,3" />
-                  <line x1="160" y1="48" x2="160" y2="85" stroke="#c0392b" strokeWidth="2" />
-                  <line x1="260" y1="48" x2="170" y2="95" stroke="#999" strokeDasharray="3,3" />
-                </svg>
-                <p style={{ marginTop: 10, fontSize: 11, color: "#999", textAlign: "center" }}>Only the centered mount is currently supported.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ===== UPDATE 9 — Resources needed (HPC) ===== */}
-        <section className="slide">
-          <div className="slide-inner">
-            <p className="section-label" style={{ color: "hsl(var(--primary))" }}>UPDATE · RESOURCES NEEDED</p>
-            <h2>Critical resource gap — HPC access</h2>
-            <p style={{ fontSize: 14, color: "#666", marginTop: 10 }}>
-              We severely need access to a <strong>High-Performance Computing</strong> cluster to unblock the next phase.
-            </p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginTop: 24 }}>
-              {[
-                { icon: "🧠", title: "Train our own models", desc: "Especially the smoking detector — current trained model does not work yet." },
-                { icon: "📊", title: "Larger-scale evaluation", desc: "Run full benchmarks across modules with realistic in-vehicle data." },
-                { icon: "🎯", title: "Camera offset generalization", desc: "Solve the critical mounting-offset problem with extensive simulation." },
-              ].map((r) => (
-                <div key={r.title} className="pres-card" style={{ textAlign: "center", padding: "22px 18px" }}>
-                  <div style={{ fontSize: 36, marginBottom: 10 }}>{r.icon}</div>
-                  <h3 style={{ fontSize: 15, marginBottom: 8 }}>{r.title}</h3>
-                  <p style={{ margin: 0, fontSize: 12, color: "#666", lineHeight: 1.6 }}>{r.desc}</p>
-                </div>
-              ))}
-            </div>
-            <div style={{ marginTop: 28, background: "#fff5f5", borderLeft: "3px solid hsl(var(--primary))", borderRadius: 10, padding: "14px 20px", fontSize: 13 }}>
-              Without HPC access, smoking-model retraining and offset-generalization research cannot progress at the pace required for the May MVP.
             </div>
           </div>
         </section>
@@ -1047,9 +1113,9 @@ export default function Index() {
       </div>
 
 
-      {seatbeltDemoOpen && (
+      {demoModalOpen && (
         <div
-          onClick={() => setSeatbeltDemoOpen(false)}
+          onClick={closeDemo}
           style={{
             position: "fixed",
             inset: 0,
@@ -1073,10 +1139,10 @@ export default function Index() {
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", borderBottom: "1px solid rgba(255,255,255,0.12)", color: "#fff" }}>
-              <strong style={{ fontSize: 14 }}>Seatbelt model demo (first 7 seconds)</strong>
+              <strong style={{ fontSize: 14 }}>{activeDemo.title} (first 7 seconds)</strong>
               <div style={{ display: "flex", gap: 8 }}>
                 <a
-                  href="/seatbelt_video.mp4"
+                  href={activeDemo.src}
                   target="_blank"
                   rel="noreferrer"
                   style={{
@@ -1092,7 +1158,7 @@ export default function Index() {
                   Open file
                 </a>
                 <button
-                  onClick={() => setSeatbeltDemoOpen(false)}
+                  onClick={closeDemo}
                   style={{
                     background: "transparent",
                     border: "1px solid rgba(255,255,255,0.35)",
@@ -1106,19 +1172,20 @@ export default function Index() {
                 </button>
               </div>
             </div>
-            {seatbeltVideoState === "error" && (
+            {demoVideoState === "error" && (
               <div style={{ padding: "12px 16px", background: "#2a1f1f", borderBottom: "1px solid rgba(255,255,255,0.12)" }}>
                 <p style={{ margin: 0, color: "#ffd7d7", fontSize: 13, lineHeight: 1.5 }}>
-                  {seatbeltVideoReason}
+                  {demoVideoReason}
                 </p>
                 <p style={{ margin: "6px 0 0", color: "#ffb3b3", fontSize: 12 }}>
-                  Recommended fix: re-export this demo as MP4 H.264 (avc1) and keep the same filename.
+                  Recommended fix: re-export this demo as MP4 H.264 (avc1) or verify the file path in public/.
                 </p>
               </div>
             )}
             <video
-              ref={seatbeltVideoRef}
-              src="/seatbelt_video.mp4"
+              key={activeDemo.src}
+              ref={demoVideoRef}
+              src={activeDemo.src}
               muted
               playsInline
               autoPlay
