@@ -10,11 +10,16 @@ const SLIDES = [
   "Face Mesh",
   "EAR & MAR",
   "PERCLOS",
-  "Gaze estimation",
+  "Gaze estimation (redesigned)",
   "DL fatigue (question)",
-  "Compliance",
+  "Seatbelt",
+  "Phone",
+  "Smoking",
+  "Video demos",
   "Progress",
   "Challenges",
+  "Critical: Camera mounting",
+  "Resources needed",
   "Questions",
 ];
 
