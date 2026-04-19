@@ -690,7 +690,36 @@ export default function Index() {
         </section>
 
 
-        {/* ===== SLIDE 10 — Progress ===== */}
+        {/* ===== SLIDE — Overall Status ===== */}
+        <section className="slide">
+          <div className="slide-inner">
+            <p className="section-label">OVERALL STATUS</p>
+            <h2>Where we stand today</h2>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginTop: 20 }}>
+              {[
+                { name: "Face mesh estimation", note: "478 landmarks, EMA stabilized, head-pose ready" },
+                { name: "Fatigue detection", note: "EAR + MAR + PERCLOS, per-driver calibrated" },
+                { name: "Gaze estimation", note: "Redesigned: head-pose + iris fusion" },
+              ].map((m) => (
+                <div key={m.name} className="pres-card" style={{ borderColor: "#86efac", background: "#f0fdf4" }}>
+                  <span className="tag tag-green">✅ Done</span>
+                  <h3 style={{ fontSize: 15, margin: "10px 0 6px", color: "#15803d" }}>{m.name}</h3>
+                  <p style={{ margin: 0, fontSize: 12, color: "#365314" }}>{m.note}</p>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 22, background: "#fff5f5", borderLeft: "4px solid hsl(var(--primary))", borderRadius: 10, padding: "16px 20px" }}>
+              <p style={{ margin: 0, fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--primary))", fontWeight: 600 }}>⚠ Main challenge now (signaled by supervisor)</p>
+              <p style={{ margin: "8px 0 0", fontSize: 14, color: "#1a1a1a", lineHeight: 1.6 }}>
+                The system currently works only for a camera mounting offset of <strong>(0, 0)</strong>. In real vehicles the camera will not always be installed like this, and mounting may vary from car to car.
+                <br />
+                <strong>The system must be dynamic to mounting offset</strong> — this is a crucial limitation we are still solving.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== SLIDE — Progress ===== */}
         <section className="slide">
           <div className="slide-inner">
             <p className="section-label">CURRENT PROGRESS</p>
@@ -705,10 +734,13 @@ export default function Index() {
                   "EAR with 10-frame smoothing + per-driver calibration",
                   "MAR with duration filter + yawn frequency counter",
                   "PERCLOS rolling 60-second window",
-                  "Gaze zone classification (4 zones)",
+                  "Gaze redesigned — fused head-pose + iris, deviation-based (not absolute)",
+                  "Gaze calibration — personal neutral reference, head-gated to prevent bias",
+                  "26 automated unit tests passing (EAR, PERCLOS, Gaze — all covered)",
+                  "Full pipeline contract enforced — all modules share a typed result_dict",
                   "Real-time overlay: all metrics displayed on screen",
                 ].map((t) => (
-                  <p key={t} style={{ fontSize: 13, margin: "8px 0", display: "flex", gap: 10, alignItems: "flex-start" }}>
+                  <p key={t} style={{ fontSize: 12.5, margin: "6px 0", display: "flex", gap: 10, alignItems: "flex-start" }}>
                     <span style={{ color: "#2e7d32", flexShrink: 0 }}>✓</span> {t}
                   </p>
                 ))}
@@ -716,44 +748,124 @@ export default function Index() {
               <div style={{ flex: 1 }}>
                 <h3 style={{ color: "#e65100" }}>🔧 In progress</h3>
                 {[
-                  "Seatbelt — YOLO pipeline set up, nearly done",
-                  "Phone — zero-shot baseline confirmed working",
-                  "Smoking — hand proximity logic implemented",
+                  "Seatbelt — 3-pipeline architecture, nearly done",
+                  "Phone — YOLOv10n + head-pose fusion, TFLite INT8",
+                  "Smoking — hybrid pipeline ready, own model not yet working",
                   "Raspberry Pi 4 — deployment and performance validation",
+                  "Camera mounting offset generalization (critical)",
                 ].map((t) => (
                   <p key={t} style={{ fontSize: 13, margin: "8px 0", display: "flex", gap: 10, alignItems: "flex-start" }}>
                     <span style={{ color: "#e65100", flexShrink: 0 }}>◐</span> {t}
                   </p>
                 ))}
+                <div style={{ marginTop: 20, background: "#fff5f5", borderLeft: "3px solid hsl(var(--primary))", borderRadius: 10, padding: "12px 16px", fontSize: 12.5 }}>
+                  <strong>🎬 Live demo available</strong> — system runs in real time on laptop.
+                </div>
               </div>
-            </div>
-            <div style={{ marginTop: 28, background: "#fff5f5", borderLeft: "3px solid hsl(var(--primary))", borderRadius: 10, padding: "16px 24px", fontSize: 13 }}>
-              <strong>🎬 Live demo available</strong> — system runs in real time on laptop. EAR, MAR, PERCLOS, gaze direction and alerts visible per frame.
             </div>
           </div>
         </section>
 
-        {/* ===== SLIDE 11 — Challenges ===== */}
+        {/* ===== SLIDE — Challenges ===== */}
         <section className="slide">
           <div className="slide-inner">
             <p className="section-label">CHALLENGES ENCOUNTERED</p>
             <h2>What we struggled with</h2>
-            <div className="grid-2x3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginTop: 24 }}>
+            <div className="grid-2x3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14, marginTop: 20 }}>
               {[
                 { title: "Threshold calibration", problem: "Fixed EAR = 0.20 does not fit all drivers", solution: "10-second per-session calibration computes personal baseline", tag: "Solved", cls: "tag-green" },
                 { title: "PERCLOS stuck at 0.00", problem: "Closure threshold (0.05) was too strict", solution: "Raised to 0.15 after analysis of real EAR distributions", tag: "Solved", cls: "tag-green" },
                 { title: "Head pose sensitivity", problem: "System invalidated too many frames", solution: "Relaxed limits + EMA smoothing + matrix fallback", tag: "Solved", cls: "tag-green" },
                 { title: "Landmark jitter", problem: "MediaPipe landmarks fluctuate frame-to-frame", solution: "Exponential Moving Average (alpha=0.4) across frames", tag: "Solved", cls: "tag-green" },
+                { title: "Gaze false positives", problem: "Pure iris thresholds fired on normal mirror checks; head turns caused phantom iris shifts", solution: "Head-pose primary gate: iris only when head < 20° yaw. Personal neutral calibrated per driver.", tag: "Solved", cls: "tag-green" },
                 { title: "Lighting conditions", problem: "No IR camera — visible light only", solution: "Known limitation. IR camera ordered, pending delivery.", tag: "Known", cls: "tag-orange" },
                 { title: "Seatbelt data", problem: "No large in-vehicle dataset from driver-facing angle", solution: "Supervisor will provide data. Roboflow as interim source.", tag: "Pending", cls: "tag-orange" },
+                { title: "Smoking own model", problem: "Hybrid pipeline ready but our trained model still does not work", solution: "Need real driver-smoking data + HPC capacity for retraining", tag: "Open", cls: "tag-orange" },
+                { title: "Camera mounting offset", problem: "System assumes camera at (0,0); breaks for real-vehicle mounting variation", solution: "Open — must make pipeline dynamic to mounting offset", tag: "Critical", cls: "tag-red" },
               ].map((c) => (
                 <div key={c.title} className="pres-card" style={{ position: "relative" }}>
-                  <span className={`tag ${c.cls}`} style={{ position: "absolute", top: 16, right: 16 }}>{c.tag}</span>
-                  <h3 style={{ fontSize: 15, marginBottom: 10, paddingRight: 70 }}>{c.title}</h3>
-                  <p style={{ fontSize: 12, color: "#999", marginBottom: 4 }}><strong>Problem:</strong> {c.problem}</p>
-                  <p style={{ fontSize: 12, color: "#666" }}><strong>Solution:</strong> {c.solution}</p>
+                  <span className={`tag ${c.cls}`} style={{ position: "absolute", top: 14, right: 14 }}>{c.tag}</span>
+                  <h3 style={{ fontSize: 14, marginBottom: 8, paddingRight: 70 }}>{c.title}</h3>
+                  <p style={{ fontSize: 11.5, color: "#999", marginBottom: 4 }}><strong>Problem:</strong> {c.problem}</p>
+                  <p style={{ fontSize: 11.5, color: "#666" }}><strong>Solution:</strong> {c.solution}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ===== SLIDE — Critical Open Problem: Camera Mounting Offset ===== */}
+        <section className="slide">
+          <div className="slide-inner">
+            <p className="section-label" style={{ color: "hsl(var(--primary))" }}>⚠ CRITICAL OPEN PROBLEM</p>
+            <h2>Camera mounting offset variation</h2>
+            <div className="two-col" style={{ display: "flex", gap: 36, marginTop: 18, alignItems: "flex-start" }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ background: "#fff5f5", border: "1px solid #ffd6d6", borderRadius: 12, padding: "18px 22px" }}>
+                  <p style={{ margin: 0, fontSize: 14, color: "#1a1a1a", lineHeight: 1.7 }}>
+                    The system currently works only for a camera mounting offset of <strong>(0, 0)</strong>.
+                    In real vehicles the camera will <strong>not</strong> always be installed like this, and mounting may vary from car to car.
+                  </p>
+                  <p style={{ margin: "12px 0 0", fontSize: 14, color: "#8b1e1e", fontWeight: 600 }}>
+                    The system must be dynamic to mounting offset.
+                  </p>
+                </div>
+                <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10 }}>
+                  {[
+                    "Affects: head pose accuracy, gaze direction, ROI cropping for compliance",
+                    "Cause: solvePnP assumes a fixed extrinsic camera placement",
+                    "Required: per-vehicle (or in-session) extrinsic auto-calibration",
+                    "Status: still looking for a solution",
+                  ].map((t) => (
+                    <p key={t} style={{ margin: 0, paddingLeft: 14, borderLeft: "2px solid hsl(var(--primary))", fontSize: 13 }}>{t}</p>
+                  ))}
+                </div>
+              </div>
+              <div style={{ flex: 1, background: "hsl(var(--surface))", borderRadius: 14, border: "1px solid hsl(var(--border))", padding: 20 }}>
+                <p style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "#666", margin: "0 0 14px", fontWeight: 600 }}>Mounting variation — illustration</p>
+                <svg viewBox="0 0 320 200" style={{ width: "100%", height: "auto" }}>
+                  <rect x="20" y="40" width="280" height="130" rx="14" fill="#fff" stroke="#ddd" />
+                  <circle cx="160" cy="105" r="22" fill="#fde2e2" stroke="#c0392b" />
+                  <text x="160" y="110" textAnchor="middle" fontSize="11" fill="#c0392b" fontWeight="600">Driver</text>
+                  <circle cx="160" cy="40" r="8" fill="#c0392b" />
+                  <text x="160" y="32" textAnchor="middle" fontSize="9" fill="#c0392b">cam (0,0) ✓</text>
+                  <circle cx="60" cy="40" r="8" fill="#999" />
+                  <text x="60" y="32" textAnchor="middle" fontSize="9" fill="#666">cam offset ✗</text>
+                  <circle cx="260" cy="40" r="8" fill="#999" />
+                  <text x="260" y="32" textAnchor="middle" fontSize="9" fill="#666">cam offset ✗</text>
+                  <line x1="60" y1="48" x2="150" y2="95" stroke="#999" strokeDasharray="3,3" />
+                  <line x1="160" y1="48" x2="160" y2="85" stroke="#c0392b" strokeWidth="2" />
+                  <line x1="260" y1="48" x2="170" y2="95" stroke="#999" strokeDasharray="3,3" />
+                </svg>
+                <p style={{ marginTop: 10, fontSize: 11, color: "#999", textAlign: "center" }}>Only the centered mount is currently supported.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== SLIDE — Resources Needed (HPC) ===== */}
+        <section className="slide">
+          <div className="slide-inner">
+            <p className="section-label">RESOURCES NEEDED</p>
+            <h2>Critical resource gap — HPC access</h2>
+            <p style={{ fontSize: 14, color: "#666", marginTop: 10 }}>
+              We severely need access to a <strong>High-Performance Computing</strong> cluster to unblock the next phase.
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginTop: 24 }}>
+              {[
+                { icon: "🧠", title: "Train our own models", desc: "Especially the smoking detector — current trained model does not work yet." },
+                { icon: "📊", title: "Larger-scale evaluation", desc: "Run full benchmarks across modules with realistic in-vehicle data." },
+                { icon: "🎯", title: "Camera offset generalization", desc: "Solve the critical mounting-offset problem with extensive simulation." },
+              ].map((r) => (
+                <div key={r.title} className="pres-card" style={{ textAlign: "center", padding: "22px 18px" }}>
+                  <div style={{ fontSize: 36, marginBottom: 10 }}>{r.icon}</div>
+                  <h3 style={{ fontSize: 15, marginBottom: 8 }}>{r.title}</h3>
+                  <p style={{ margin: 0, fontSize: 12, color: "#666", lineHeight: 1.6 }}>{r.desc}</p>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 28, background: "#fff5f5", borderLeft: "3px solid hsl(var(--primary))", borderRadius: 10, padding: "14px 20px", fontSize: 13 }}>
+              Without HPC access, smoking-model retraining and offset-generalization research cannot progress at the pace required for the May MVP.
             </div>
           </div>
         </section>
