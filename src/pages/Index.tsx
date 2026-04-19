@@ -395,28 +395,65 @@ export default function Index() {
           </div>
         </section>
 
-        {/* ===== SLIDE 7 — Gaze estimation ===== */}
+        {/* ===== SLIDE 7 — Gaze estimation (REDESIGNED) ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <div className="two-col" style={{ display: "flex", gap: 48, alignItems: "flex-start" }}>
+            <p className="section-label">TECHNICAL CONCEPTS 4 / 4 · MAJOR REDESIGN</p>
+            <h2>Gaze estimation — fused head-pose + iris</h2>
+            <div className="two-col" style={{ display: "flex", gap: 36, alignItems: "flex-start", marginTop: 16 }}>
               <div style={{ flex: 1 }}>
-                <p className="section-label">TECHNICAL CONCEPTS 4 / 4</p>
-                <h2>Gaze estimation</h2>
-                <p>MediaPipe provides iris landmarks (5 points per eye). We measure where the iris sits within the eye bounding box.</p>
-                <div className="formula-block">
-                  <Latex display>{String.raw`h_{\text{ratio}} = \frac{x_{\text{iris}} - x_{\text{left}}}{w_{\text{eye}}} \qquad v_{\text{ratio}} = \frac{y_{\text{iris}} - y_{\text{top}}}{h_{\text{eye}}}`}</Latex>
+                <div style={{ background: "#fff5f5", border: "1px solid #ffd6d6", borderRadius: 10, padding: "10px 14px", marginBottom: 14 }}>
+                  <p style={{ margin: 0, fontSize: 12, color: "#8b1e1e" }}>
+                    <strong>Old approach:</strong> absolute iris thresholds. Failed — didn't account for driver anatomy variation, and produced phantom signals when the head turned.
+                  </p>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 16 }}>
-                  <div className="threshold-row" style={{ borderColor: "#2e7d32" }}><span className="tag tag-green">FORWARD</span> h ∈ [0.35, 0.65] and v ∈ [0.35, 0.65]</div>
-                  <div className="threshold-row" style={{ borderColor: "#e65100" }}><span className="tag tag-orange">LEFT</span> h &lt; 0.35</div>
-                  <div className="threshold-row" style={{ borderColor: "#e65100" }}><span className="tag tag-orange">RIGHT</span> h &gt; 0.65</div>
-                  <div className="threshold-row" style={{ borderColor: "#e65100" }}><span className="tag tag-orange">DOWN</span> v &gt; 0.65</div>
+                <h3 style={{ fontSize: 16, marginBottom: 8 }}>New approach: two-signal fusion</h3>
+                <div style={{ overflow: "hidden", borderRadius: 10, border: "1px solid hsl(var(--border))", marginBottom: 14 }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                    <thead>
+                      <tr style={{ background: "hsl(var(--surface))" }}>
+                        <th style={{ textAlign: "left", padding: "8px 10px", fontWeight: 600 }}>Signal</th>
+                        <th style={{ textAlign: "left", padding: "8px 10px", fontWeight: 600 }}>When used</th>
+                        <th style={{ textAlign: "left", padding: "8px 10px", fontWeight: 600 }}>Why</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr style={{ borderTop: "1px solid hsl(var(--border))" }}>
+                        <td style={{ padding: "8px 10px", fontWeight: 600 }}>Head pose</td>
+                        <td style={{ padding: "8px 10px" }}>|yaw|&gt;20° or |pitch|&gt;15°</td>
+                        <td style={{ padding: "8px 10px", color: "#666" }}>Reliable at any head angle, no calibration</td>
+                      </tr>
+                      <tr style={{ borderTop: "1px solid hsl(var(--border))" }}>
+                        <td style={{ padding: "8px 10px", fontWeight: 600 }}>Iris deviation</td>
+                        <td style={{ padding: "8px 10px" }}>Head near-forward only</td>
+                        <td style={{ padding: "8px 10px", color: "#666" }}>Detects eye-only shifts; bbox undistorted here</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-                <p style={{ fontSize: 12, color: "#999", marginTop: 14 }}>Head turn ≠ gaze direction — they are separated</p>
-                <p style={{ fontSize: 12, color: "#999" }}>Alert fires after 2 continuous seconds away from forward</p>
+                <div style={{ background: "#e8f4fd", border: "1px solid #bbdefb", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#1565c0" }}>
+                  <strong>Calibration (new):</strong> first 40 valid near-forward frames build a personal iris neutral reference — adapts to each driver's anatomy.
+                </div>
               </div>
-              <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                <EyeDiagram />
+              <div style={{ flex: 1 }}>
+                <div className="formula-block" style={{ marginBottom: 8 }}>
+                  <Latex display>{String.raw`\Delta h = h_{\text{ratio}} - h_{\text{neutral}} \;\Rightarrow\; \text{left/right if } |\Delta h| > 0.14`}</Latex>
+                </div>
+                <div className="formula-block" style={{ marginBottom: 8 }}>
+                  <Latex display>{String.raw`\Delta v = v_{\text{ratio}} - v_{\text{neutral}} \;\Rightarrow\; \text{up/down if } |\Delta v| > 0.10/0.12`}</Latex>
+                </div>
+                <div className="formula-block" style={{ marginBottom: 8 }}>
+                  <Latex display>{String.raw`|\text{yaw}| > 20^{\circ} \;\Rightarrow\; \text{left/right from head pose}`}</Latex>
+                </div>
+                <div className="formula-block" style={{ marginBottom: 14 }}>
+                  <Latex display>{String.raw`\text{pitch} > 15^{\circ} \text{ or } < -10^{\circ} \;\Rightarrow\; \text{down/up from head pose}`}</Latex>
+                </div>
+                <div className="threshold-row" style={{ borderColor: "hsl(var(--primary))" }}>
+                  <span className="tag tag-red">Alert</span> Stable non-forward for <strong>2.5 s</strong> (was 2.0), confirmed over <strong>8 frames</strong> (was 5)
+                </div>
+                <div className="threshold-row" style={{ borderColor: "#2e7d32" }}>
+                  <span className="tag tag-green">Mirror checks</span> &lt; 2 s no longer trigger false alerts
+                </div>
               </div>
             </div>
           </div>
