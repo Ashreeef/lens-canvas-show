@@ -11,7 +11,7 @@ const SLIDES = [
   "EAR & MAR",
   "PERCLOS",
   "Gaze estimation",
-  "DL fatigue (question)",
+  "DL fatigue (implemented)",
   "Compliance",
   "Progress",
   "Challenges",
@@ -462,49 +462,66 @@ export default function Index() {
           </div>
         </section>
 
-        {/* ===== SLIDE 8 — Deep Learning Fatigue (Question) ===== */}
+        {/* ===== SLIDE 8 — Deep Learning Fatigue (Implemented) ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">RESEARCH DIRECTION</p>
-            <h2>Can deep learning improve fatigue detection?</h2>
+            <p className="section-label">DEEP LEARNING — IMPLEMENTED</p>
+            <h2>We implemented a hybrid CNN + LSTM fatigue pipeline</h2>
             <div className="two-col" style={{ display: "flex", gap: 24, marginTop: 10 }}>
               <div style={{ flex: 1 }}>
-                <p>
-                  Our current fatigue module uses interpretable metrics (EAR, MAR, PERCLOS) and works well in real-time.
-                  The next step we want to explore is a deep learning approach that can learn subtle temporal patterns automatically.
-                </p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 14 }}>
+                <h3 style={{ fontSize: 15, marginBottom: 10 }}>How the pipeline works</h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {[
-                    "Goal: detect fatigue earlier than threshold-based rules",
-                    "Input options: eye crops, full face clips, or landmarks + image fusion",
-                    "Temporal modeling: CNN+LSTM, TCN, or lightweight video transformers",
-                    "Target output: alert / mildly drowsy / highly drowsy confidence score",
-                  ].map((t) => (
-                    <p key={t} style={{ margin: 0, paddingLeft: 14, borderLeft: "2px solid hsl(var(--border))", fontSize: 13 }}>{t}</p>
+                    ["LEM / REM", "Left & Right Eye Movement — eye-openness ratio computed from vertical vs. horizontal eye span. Detects sustained closure that signals drowsiness."],
+                    ["LEBM / REBM", "Left & Right Eyebrow Movement — distance of each eyebrow from the head centerline, normalised by brow width. Drooping brows are a key fatigue cue."],
+                    ["MM", "Mouth Movement — vertical mouth opening relative to mouth width, used to catch yawning episodes over time."],
+                    ["Head-tilt angle", "Pitch angle from our solvePnP head-pose pipeline. Forward nodding or backward slumping — both strong drowsiness indicators."],
+                    ["Global features", "AlexNet (8-layer, pre-trained) scores each full-face frame as drowsy or alert. Compensates when structural cues are occluded or noisy."],
+                    ["Fusion → LSTM", "All 6 structural values + CNN score form one 7-element vector per frame, fed into a 4-layer LSTM (128→64→64→64 units, 150 steps)."],
+                  ].map(([t, d]) => (
+                    <div key={t} style={{ display: "flex", gap: 12, padding: "7px 12px", background: "hsl(var(--surface))", borderRadius: 8 }}>
+                      <span style={{ color: "hsl(var(--primary))", fontWeight: 700, fontSize: 12, flexShrink: 0, paddingTop: 1 }}>{t}</span>
+                      <span style={{ color: "#666", fontSize: 12, lineHeight: 1.5 }}>{d}</span>
+                    </div>
                   ))}
                 </div>
               </div>
               <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12 }}>
                 <div className="pres-card" style={{ padding: "16px 18px" }}>
-                  <span className="tag tag-blue">Potential advantages</span>
-                  <p style={{ marginTop: 10, fontSize: 13 }}>
-                    Better robustness to driver-to-driver variability and non-linear fatigue cues that simple thresholds might miss.
+                  <span className="tag tag-green">Our results — drowsiness score</span>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12 }}>
+                    {[
+                      ["Structural only", "73%"],
+                      ["CNN only", "71%"],
+                      ["Merged", "81%"],
+                    ].map(([label, val]) => (
+                      <div key={label} style={{ textAlign: "center", background: "hsl(var(--surface))", borderRadius: 8, padding: "10px 6px" }}>
+                        <div style={{ fontSize: 20, fontWeight: 700, color: "hsl(var(--primary))" }}>{val}</div>
+                        <div style={{ fontSize: 11, color: "#888", marginTop: 2 }}>{label}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <p style={{ fontSize: 11, color: "#999", marginTop: 8, marginBottom: 0 }}>
+                    Merging both branches consistently outperforms either branch alone.
                   </p>
                 </div>
                 <div className="pres-card" style={{ padding: "16px 18px" }}>
-                  <span className="tag tag-orange">Main risks</span>
-                  <p style={{ marginTop: 10, fontSize: 13 }}>
-                    Needs labeled fatigue datasets, may overfit to lighting/camera conditions, and can be heavier for Raspberry Pi deployment.
-                  </p>
+                  <span className="tag tag-blue">Our adaptations vs. original approach</span>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 10 }}>
+                    {[
+                      ["MediaPipe (478 pts) instead of Dlib", "MediaPipe runs efficiently on CPU with no native-library dependency — ideal for Raspberry Pi 4 deployment. Dlib's SVM detector is heavier and harder to cross-compile on ARM."],
+                      ["EAR / MAR reused as LEM / REM / MM", "Our existing EAR and MAR measurements map directly onto the structural-feature definitions, so no extra landmark processing was needed — plug-and-play integration."],
+                      ["Head-tilt from solvePnP", "We already compute pitch/yaw/roll via OpenCV solvePnP for gaze estimation. The pitch angle is extracted and passed as the head-tilt parameter, avoiding any duplicated work."],
+                      ["Own training data added", "We merged additional driving dataset to the current one "],
+                    ].map(([title, desc]) => (
+                      <div key={title} style={{ paddingLeft: 12, borderLeft: "2px solid hsl(var(--primary) / 0.4)" }}>
+                        <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: "#333" }}>{title}</p>
+                        <p style={{ margin: "2px 0 0", fontSize: 11, color: "#777", lineHeight: 1.5 }}>{desc}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div style={{ background: "#fff5f5", border: "1px solid #ffd6d6", borderRadius: 10, padding: "14px 16px" }}>
-                  <p style={{ margin: 0, fontSize: 14, color: "#8b1e1e", fontWeight: 600 }}>
-                    Open question: will deep learning outperform our current pipeline enough to justify added complexity?
-                  </p>
-                  <p style={{ margin: "6px 0 0", fontSize: 12, color: "#7a5555" }}>
-                    This remains an active validation topic in our roadmap.
-                  </p>
-                </div>
+
               </div>
             </div>
           </div>
