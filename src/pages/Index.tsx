@@ -297,6 +297,9 @@ export default function Index() {
             <p className="section-label">SYSTEM ARCHITECTURE</p>
             <h2>One pipeline, six modules, one frame at a time</h2>
             <ArchitectureDiagram />
+            <div style={{ marginTop: 18, display: "flex", justifyContent: "center" }}>
+              <img src="/system_pic.png" alt="System overview diagram" style={{ maxWidth: 360, width: "100%", height: "auto", borderRadius: 10, boxShadow: "0 6px 18px rgba(0,0,0,0.08)" }} />
+            </div>
             <div style={{ marginTop: 14, display: "flex", gap: 14, fontSize: 11, color: "#777", flexWrap: "wrap", justifyContent: "center" }}>
               <span>● Solid arrow = synchronous, main thread</span>
               <span>┄ Dashed arrow = async daemon, lock-guarded</span>
@@ -596,7 +599,7 @@ result_dict["alerts"]        = [...]  # ranked, deduped`}</CodeBlock>
                   n: "2",
                   flag: "--seatbelt-pipeline 2 (default)",
                   title: "Pose ROI → YOLOv8n + MobileNetV3 → RANSAC + EMA",
-                  desc: "MediaPipe Pose crops the torso, YOLOv8n detects, MobileNetV3 classifies the patch, RANSAC fits a diagonal-strap line as a geometric prior. Fusion: CNN 0.20 / YOLO 0.80.",
+                  desc: "MediaPipe Pose crops the torso, YOLOv8n detects, MobileNetV3 classifies the patch, RANSAC fits a diagonal-strap line as a geometric prior. Fusion: CNN 0.10 / YOLO 0.90.",
                   caveat: "Most robust. Default for the demo and the Qareeb MVP.",
                   rec: true,
                 },
@@ -625,7 +628,7 @@ result_dict["alerts"]        = [...]  # ranked, deduped`}</CodeBlock>
               <div className="pres-card" style={{ flex: 1, padding: "12px 14px" }}>
                 <strong style={{ fontSize: 13 }}>Asymmetric hysteresis</strong>
                 <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                  <strong>5 frames</strong> to confirm ON · <strong>45 frames (~3 s)</strong> to confirm OFF.
+                  <strong>24 frames</strong> to confirm ON · <strong>27 frames (~1.8 s)</strong> to confirm OFF.
                   <br />Quick to trust the strap, slow to commit to "off" — flicker is real, strap loss isn't.
                 </p>
               </div>
@@ -896,7 +899,7 @@ result_dict["alerts"]        = [...]  # ranked, deduped`}</CodeBlock>
                 <h3 style={{ fontSize: 14, margin: "8px 0 4px" }}>Compliance hysteresis</h3>
                 <p style={{ fontSize: 12, color: "#666", margin: "0 0 6px" }}>Asymmetric counters per class:</p>
                 <ul style={{ paddingLeft: 16, fontSize: 12, color: "#666", lineHeight: 1.7, margin: 0 }}>
-                  <li>seatbelt: <strong>5</strong> ON / <strong>45</strong> OFF</li>
+                  <li>seatbelt: <strong>24</strong> ON / <strong>27</strong> OFF</li>
                   <li>smoking: <strong>8</strong> ON / <strong>20</strong> OFF</li>
                   <li>phone: <strong>8</strong> ON / <strong>20</strong> OFF</li>
                 </ul>
@@ -990,11 +993,11 @@ gaze:
                 <CodeBlock>{`# configs/seatbelt.yaml
 pipeline: 2
 fusion:
-  cnn_weight: 0.20
-  yolo_weight: 0.80
+  cnn_weight: 0.10
+  yolo_weight: 0.90
 hysteresis:
-  on_frames: 5
-  off_frames: 45
+  on_frames: 24
+  off_frames: 27
 
 # configs/smoking.yaml
 fusion_alpha: 0.10
@@ -1173,7 +1176,7 @@ python scripts/run_demo.py --output annotated.mp4
                     ["ComplianceWorker daemon thread", "YOLO 30–50 ms would blow the 67 ms main-thread budget. Async + lock-guarded merge."],
                     ["FatigueScorer single 0..1", "Independent alerts spam the driver. Humans care about overall state, not which sub-signal fired."],
                     ["WinMM MCI / aplay / afplay for audio", "Pure stdlib — no new pip deps; one less failure mode in deployment."],
-                    ["Asymmetric seatbelt hysteresis (5/45)", "Flicker is real, strap loss isn't. Slow to commit OFF, fast to confirm ON."],
+                    ["Asymmetric seatbelt hysteresis (24/27)", "Flicker is real, strap loss isn't. Slow to commit OFF, fast to confirm ON."],
                     ["Result_dict shared mutable contract", "Replaces 20 dataclasses with 200 lines of plumbing. Faster on RPi, easier to reason about."],
                   ].map((row, i) => (
                     <tr key={i} style={{ borderTop: "1px solid hsl(var(--border))" }}>
