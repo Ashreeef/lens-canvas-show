@@ -134,7 +134,7 @@ export default function Index() {
       setDemoVideoState("error");
       setDemoVideoReason("The browser blocked playback or cannot decode this video format.");
     });
-    const onTimeUpdate = () => { if (video.currentTime >= 7) video.pause(); };
+    const onTimeUpdate = () => { if (video.currentTime >= 50) video.pause(); };
     const onLoadedData = () => { setDemoVideoState("ready"); setDemoVideoReason(""); };
     const onError = () => {
       setDemoVideoState("error");
