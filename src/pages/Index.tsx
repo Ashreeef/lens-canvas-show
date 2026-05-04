@@ -31,8 +31,8 @@ const TOTAL = SLIDES.length;
 
 const DEMO_VIDEOS = {
   fatigue: { title: "Fatigue module demo", src: "/fatigue_video.mp4" },
-  seatbelt: { title: "Seatbelt module demo", src: "/seatbelt_video.mp4" },
-  phone: { title: "Phone module demo", src: "/phone_vid.mp4" },
+  seatbelt: { title: "Seatbelt module demo", src: "/seatbelt_vid.mp4" },
+  phone: { title: "Phone module demo", src: "/phone_video.mp4" },
   smoking: { title: "Smoking module demo", src: "/smoking_video.mp4" },
 } as const;
 
