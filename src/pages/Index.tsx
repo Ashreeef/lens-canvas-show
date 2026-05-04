@@ -16,7 +16,8 @@ const SLIDES = [
   "Seatbelt",
   "Phone",
   "Smoking",
-  "DL fatigue",
+  "DL · 3 axes",
+  "DL · what hurts",
   "Fatigue score",
   "Alert engine",
   "Config discipline",
@@ -789,60 +790,109 @@ result_dict["alerts"]        = [...]  # ranked, deduped`}</CodeBlock>
           </div>
         </section>
 
-        {/* ===== 13 — Module 4 · DL fatigue ===== */}
+        {/* ===== 13 — Module 4 · Three axes ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">MODULE 4 · DEEP-LEARNING FATIGUE (HAMZA)</p>
-            <h2>CNN-GRU fatigue — implemented, slightly beats landmarks, hard on RPi 4</h2>
-            <div className="two-col" style={{ display: "flex", gap: 24, marginTop: 14, alignItems: "flex-start" }}>
-              <div style={{ flex: 1 }}>
-                <div className="pres-card" style={{ padding: "12px 14px", marginBottom: 10 }}>
-                  <strong style={{ fontSize: 13 }}>Architecture</strong>
-                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                    Per-eye CNN encoder (small backbone, ~ MobileNetV2 stem) → 128-dim embedding → GRU temporal head
-                    over a sliding window of 16 frames → binary "alert / drowsy" head. Trained on a curated mix
-                    of public driver-drowsiness corpora plus our own augmented in-cabin clips.
+            <p className="section-label">MODULE 4 · DL FATIGUE (HAMZA) — 1 / 2</p>
+            <h2>Three approaches, one evaluation pipeline, one hard lesson</h2>
+            <p style={{ fontSize: 13, color: "#666", marginTop: 4, marginBottom: 12 }}>
+              Tried in parallel: a hybrid CNN+LSTM, a graph-based <strong>LiteFat</strong>, and an image-only 10-class State Farm classifier.
+              All three pushed through a unified evaluation pipeline on <strong>YawDD</strong> and <strong>3MDAD</strong>.
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 14 }}>
+              <AxisCard
+                color="#3b82f6"
+                badge="Axis 1"
+                title="Hybrid CNN + LSTM"
+                steps={["Dlib 68 lm", "6 ratios + AlexNet score", "7-D / frame", "LSTM 150 frm", "Drowsy ?"]}
+                note="Structural (LEM, REM, LEBM, REBM, MM, head tilt) ⊕ AlexNet global score → 7-D vector → LSTM over 150 frames. Streams cover each other's weak spot."
+              />
+              <AxisCard
+                color="#10b981"
+                badge="Axis 2 · LiteFat"
+                title="Spatio-temporal graph"
+                steps={["68 lm (X,Y,c)", "MobileNetV3 ctx", "X = C·w·dᵀ", "Adaptive adj.", "GCN + Gated TCN"]}
+                note="Face as a graph. Adaptive adjacency learned end-to-end. ≈1.3 M params vs ≈226 M for JHPFA-Net — the only model in the report that could plausibly run in-vehicle."
+              />
+              <AxisCard
+                color="#f59e0b"
+                badge="Axis 3 · State Farm"
+                title="10-class distraction CNN"
+                steps={["Cabin image", "224×224 + aug.", "MobileNet/ResNet", "Fine-tuned head", "Softmax · 10 cls"]}
+                note="Image-only transfer learning. Extends fatigue scope to texting / phone / drink / reach / hair / talk. Driver-grouped split mandatory — random split silently inflates accuracy."
+              />
+            </div>
+            <div className="two-col" style={{ display: "flex", gap: 16, alignItems: "stretch" }}>
+              <div style={{ flex: 1.15, background: "#fff", border: "1px solid hsl(var(--border))", borderRadius: 12, padding: "12px 14px" }}>
+                <p style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--primary))", margin: "0 0 6px", fontWeight: 600 }}>
+                  Headline finding · paper-vs-reality gap
+                </p>
+                <PaperVsRealityChart />
+              </div>
+              <div style={{ flex: 0.85, display: "flex", flexDirection: "column", gap: 8 }}>
+                <div className="pres-card" style={{ padding: "10px 14px", background: "#fff5f5", borderColor: "#ffd6d6" }}>
+                  <strong style={{ fontSize: 12, color: "#8b1e1e" }}>YOLOv8 in-domain on DDD</strong>
+                  <p style={{ margin: "2px 0 0", fontSize: 11, color: "#8b1e1e" }}>
+                    Precision 0.999 · Recall 1.000 · mAP 0.995 — looks perfect.
                   </p>
                 </div>
-                <div className="pres-card" style={{ padding: "12px 14px", marginBottom: 10 }}>
-                  <strong style={{ fontSize: 13 }}>What we measured</strong>
-                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                    On our held-out clips, CNN-GRU is <strong>close to or slightly better</strong> than the
-                    EAR + PERCLOS baseline on F1 — the gain is largest on subjects whose neutral EAR sits at
-                    the edges of the population (very wide or very narrow eyes), where geometric thresholds
-                    struggle even with calibration.
+                <div className="pres-card" style={{ padding: "10px 14px", background: "#fff5f5", borderColor: "#ffd6d6" }}>
+                  <strong style={{ fontSize: 12, color: "#8b1e1e" }}>YOLOv8 cross-dataset on YawDD</strong>
+                  <p style={{ margin: "2px 0 0", fontSize: 11, color: "#8b1e1e" }}>
+                    Accuracy ≈ 0.50 · F1 = <strong>0.06</strong> · AUC ≈ 0.54 — barely above chance.
                   </p>
                 </div>
-                <div className="pres-card" style={{ padding: "12px 14px" }}>
-                  <strong style={{ fontSize: 13 }}>Why it's not in the MVP path</strong>
-                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                    The gain is small. Module 2 (EAR/MAR/PERCLOS) is already feeding the FatigueScorer, and the
-                    score-level design absorbs the strengths of both signals. Adding CNN-GRU on the main thread
-                    is a measurable cost for a marginal accuracy bump.
-                  </p>
+                <div style={{ background: "#0f172a", color: "#e2e8f0", borderRadius: 10, padding: "10px 14px", fontSize: 12, lineHeight: 1.5 }}>
+                  <strong style={{ color: "#fbbf24" }}>So what?</strong> Models lean on dataset-specific cues. Change camera angle, lighting, or driver pool and the cues vanish. Single-dataset accuracy is <em>not</em> a deployment metric.
                 </div>
               </div>
-              <div style={{ flex: 1 }}>
-                <h3 style={{ fontSize: 16 }}>The Raspberry Pi 4 problem</h3>
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {[
-                    ["Latency", "Per-frame inference of CNN-GRU on RPi 4 CPU is ≈ 90–130 ms — by itself, that already misses the 67 ms / frame budget for 15 FPS."],
-                    ["Memory", "Sliding 16-frame buffer × per-eye crops + GRU hidden state pushes RAM tight when MediaPipe + YOLO are also resident."],
-                    ["Quantization", "INT8 quantization halves latency on x86 but gives much smaller speedups on the RPi 4 NEON path; FP16 isn't supported on this CPU."],
-                    ["Threading", "Cannot move it to the ComplianceWorker — fatigue is a synchronous Module 6 input. Async fatigue would race the score."],
-                  ].map(([t, d]) => (
-                    <div key={t} style={{ borderLeft: "2px solid hsl(var(--primary))", paddingLeft: 12 }}>
-                      <strong style={{ fontSize: 12 }}>{t}</strong>
-                      <p style={{ margin: "2px 0 0", fontSize: 11, color: "#666", lineHeight: 1.5 }}>{d}</p>
-                    </div>
-                  ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ===== 14 — Module 4 · What hurts ===== */}
+        <section className="slide">
+          <div className="slide-inner">
+            <p className="section-label">MODULE 4 · DL FATIGUE (HAMZA) — 2 / 2</p>
+            <h2>Lighting and angle hurt more than architecture choice</h2>
+            <div className="two-col" style={{ display: "flex", gap: 16, marginTop: 12, alignItems: "stretch" }}>
+              <div style={{ flex: 1.05, background: "#fff", border: "1px solid hsl(var(--border))", borderRadius: 12, padding: "12px 14px" }}>
+                <p style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--primary))", margin: "0 0 6px", fontWeight: 600 }}>
+                  Lighting &amp; occlusion (NTHU-DDD-style)
+                </p>
+                <LightingOcclusionChart />
+                <p style={{ fontSize: 11, color: "#666", margin: "6px 0 0" }}>
+                  Structural collapses to <strong>38%</strong> on Night-Glasses (Dlib loses landmarks in IR). Hybrid stays <strong>≥ 80%</strong> everywhere.
+                </p>
+              </div>
+              <div style={{ flex: 0.95, background: "#fff", border: "1px solid hsl(var(--border))", borderRadius: 12, padding: "12px 14px" }}>
+                <p style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--primary))", margin: "0 0 6px", fontWeight: 600 }}>
+                  Camera angle (3MDAD)
+                </p>
+                <CameraAngleChart />
+                <p style={{ fontSize: 11, color: "#666", margin: "6px 0 0" }}>
+                  <strong>88% → 47%</strong> as the camera moves frontal → ±45°. Datasets train head-on; production cameras don't sit head-on.
+                </p>
+              </div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8, marginTop: 14 }}>
+              {[
+                { n: "01", color: "#ef4444", title: "Paper-vs-reality gap", body: "Single-dataset accuracy ≠ deployment performance." },
+                { n: "02", color: "#f59e0b", title: "Lighting + angle dominate", body: "A simple model on the right angle beats a fancy one on the wrong angle." },
+                { n: "03", color: "#10b981", title: "Hybrid degrades gracefully", body: "Merged CNN+LSTM stays ≥ 80% across every NTHU scenario, including Night-Glasses." },
+                { n: "04", color: "#3b82f6", title: "Lightweight is mandatory", body: "Embedded targets rule out heavy stacks — LiteFat (1.3 M params) is the realistic direction." },
+                { n: "05", color: "#8b5cf6", title: "Subject-aware splits", body: "Random splits put the same driver in train + val. Always group-by-driver." },
+              ].map((c) => (
+                <div key={c.n} className="pres-card" style={{ padding: "10px 12px", borderTop: `3px solid ${c.color}` }}>
+                  <div style={{ fontSize: 10, color: c.color, fontWeight: 700, letterSpacing: "0.05em" }}>TAKEAWAY {c.n}</div>
+                  <strong style={{ fontSize: 12, display: "block", marginTop: 4 }}>{c.title}</strong>
+                  <p style={{ margin: "3px 0 0", fontSize: 11, color: "#666", lineHeight: 1.4 }}>{c.body}</p>
                 </div>
-                <div style={{ marginTop: 12, background: "#fff7ed", border: "1px solid #ffd6a8", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#7c3a05" }}>
-                  <strong>Resolution path (post-MVP).</strong> Distill the CNN-GRU head into a smaller backbone,
-                  share the eye crops with Module 2 (no double work), and run inference once every <em>k</em> frames
-                  with a temporal interpolation. On paper this fits the budget — the engineering work, not the
-                  modelling, is what's outstanding.
-                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 12, display: "flex", gap: 12 }}>
+              <div style={{ flex: 1, background: "#fff7ed", border: "1px solid #ffd6a8", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#7c3a05" }}>
+                <strong>Why this isn't on Q-Vision's RPi 4 main path.</strong> Even LiteFat (the smallest of the three) is heavier than EAR/MAR/PERCLOS, and the cross-dataset gap means we couldn't trust a black-box fatigue head in a vehicle we hadn't fine-tuned for. Module 2 + FatigueScorer remains the deployed path; the DL work informs Q-Vision's failure modes (IR, off-axis) and shapes the IR-camera roadmap.
               </div>
             </div>
           </div>
@@ -1471,7 +1521,7 @@ function ArchitectureDiagram() {
         {box(60, 230, 180, 70, "Module 2 · Fatigue", "EAR · MAR · PERCLOS")}
         {box(265, 230, 180, 70, "Module 3 · Gaze", "head-pose ⊕ iris fusion")}
         {box(470, 230, 180, 70, "Module 5 · Compliance", "Seatbelt · Smoking · Phone", "#fff5f5", "#fca5a5")}
-        {box(675, 230, 180, 70, "Module 4 · DL fatigue", "CNN-GRU · off main path", "#f3f4f6", "#d1d5db")}
+        {box(675, 230, 180, 70, "Module 4 · DL fatigue", "3 axes · informs roadmap", "#f3f4f6", "#d1d5db")}
 
         {/* arrows from bus to modules */}
         {arrow(150, 202, 150, 228)}
@@ -1495,5 +1545,180 @@ function ArchitectureDiagram() {
         {arrow(500, 432, 500, 448)}
       </svg>
     </div>
+  );
+}
+
+/* ===================== Module 4 charts ===================== */
+
+function AxisCard({
+  color, badge, title, steps, note,
+}: { color: string; badge: string; title: string; steps: string[]; note: string }) {
+  return (
+    <div style={{ background: "#fff", border: "1px solid hsl(var(--border))", borderRadius: 12, padding: "12px 14px", borderTop: `4px solid ${color}` }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+        <span style={{ background: color + "22", color: color, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", padding: "3px 8px", borderRadius: 100 }}>{badge}</span>
+      </div>
+      <h3 style={{ fontSize: 14, margin: "0 0 8px", color: "#1a1a1a" }}>{title}</h3>
+      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>
+        {steps.map((s, i) => (
+          <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+            <span style={{ fontSize: 9.5, padding: "3px 6px", background: i === 0 ? "#1a1a1a" : i === steps.length - 1 ? color : "#f1f5f9", color: i === 0 || i === steps.length - 1 ? "#fff" : "#334155", borderRadius: 5, fontWeight: 600, whiteSpace: "nowrap" }}>{s}</span>
+            {i < steps.length - 1 && <span style={{ color: "#94a3b8", fontSize: 9 }}>›</span>}
+          </span>
+        ))}
+      </div>
+      <p style={{ margin: 0, fontSize: 11, color: "#666", lineHeight: 1.5 }}>{note}</p>
+    </div>
+  );
+}
+
+function PaperVsRealityChart() {
+  const groups = [
+    { label: "CNN", sub: "in-domain DDD", paper: 95, ours: 62 },
+    { label: "YOLOv8", sub: "in-domain DDD", paper: 99.5, ours: 99.5 },
+    { label: "CNN", sub: "cross · YawDD", paper: 92, ours: 58 },
+    { label: "YOLOv8", sub: "cross · YawDD", paper: 92, ours: 50.5 },
+  ];
+  const W = 460, H = 170, padL = 28, padR = 8, padT = 10, padB = 36;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const groupW = innerW / groups.length;
+  const barW = (groupW - 14) / 2;
+  const max = 100;
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+      {[0, 25, 50, 75, 100].map((y) => {
+        const yy = padT + innerH - (y / max) * innerH;
+        return (
+          <g key={y}>
+            <line x1={padL} y1={yy} x2={W - padR} y2={yy} stroke="#e5e7eb" strokeWidth={0.6} />
+            <text x={padL - 4} y={yy + 3} fontSize={8} textAnchor="end" fill="#888">{y}</text>
+          </g>
+        );
+      })}
+      {groups.map((g, i) => {
+        const gx = padL + i * groupW + 7;
+        const ph = (g.paper / max) * innerH;
+        const oh = (g.ours / max) * innerH;
+        const gap = g.paper - g.ours;
+        return (
+          <g key={i}>
+            <rect x={gx} y={padT + innerH - ph} width={barW} height={ph} fill="#3b82f6" rx={2} />
+            <text x={gx + barW / 2} y={padT + innerH - ph - 3} fontSize={8} textAnchor="middle" fill="#1e40af" fontWeight={700}>{g.paper}%</text>
+            <rect x={gx + barW + 4} y={padT + innerH - oh} width={barW} height={oh} fill="#f97316" rx={2} />
+            <text x={gx + barW + 4 + barW / 2} y={padT + innerH - oh - 3} fontSize={8} textAnchor="middle" fill="#9a3412" fontWeight={700}>{g.ours}%</text>
+            <text x={gx + groupW / 2 - 7} y={H - padB + 12} fontSize={9} textAnchor="middle" fill="#222" fontWeight={600}>{g.label}</text>
+            <text x={gx + groupW / 2 - 7} y={H - padB + 22} fontSize={8} textAnchor="middle" fill="#888">{g.sub}</text>
+            {gap >= 25 && (
+              <text x={gx + groupW / 2 - 7} y={padT + innerH - oh - 16} fontSize={8} textAnchor="middle" fill="#dc2626" fontWeight={700}>↓{gap.toFixed(0)}pt</text>
+            )}
+          </g>
+        );
+      })}
+      <g transform={`translate(${padL}, ${H - 8})`}>
+        <rect x={0} y={-7} width={9} height={9} fill="#3b82f6" rx={1} />
+        <text x={13} y={1} fontSize={8.5} fill="#333">Paper-reported</text>
+        <rect x={92} y={-7} width={9} height={9} fill="#f97316" rx={1} />
+        <text x={105} y={1} fontSize={8.5} fill="#333">Our measurements</text>
+      </g>
+    </svg>
+  );
+}
+
+function LightingOcclusionChart() {
+  const conditions = [
+    { label: "Daylight", sub: "no glasses", structural: 93, cnn: 64, hybrid: 97 },
+    { label: "Daylight", sub: "glasses", structural: 90, cnn: 88, hybrid: 91 },
+    { label: "Daylight", sub: "sunglasses", structural: 93, cnn: 89, hybrid: 95 },
+    { label: "Night", sub: "no glasses", structural: 80, cnn: 75, hybrid: 86 },
+    { label: "Night", sub: "glasses", structural: 38, cnn: 72, hybrid: 82 },
+  ];
+  const series: ("structural" | "cnn" | "hybrid")[] = ["structural", "cnn", "hybrid"];
+  const colors = { structural: "#10b981", cnn: "#f97316", hybrid: "#1e3a8a" };
+  const W = 460, H = 200, padL = 26, padR = 8, padT = 10, padB = 46;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const groupW = innerW / conditions.length;
+  const barW = (groupW - 12) / 3;
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+      {[0, 25, 50, 75, 100].map((y) => {
+        const yy = padT + innerH - (y / 100) * innerH;
+        return (
+          <g key={y}>
+            <line x1={padL} y1={yy} x2={W - padR} y2={yy} stroke="#e5e7eb" strokeWidth={0.6} />
+            <text x={padL - 4} y={yy + 3} fontSize={8} textAnchor="end" fill="#888">{y}</text>
+          </g>
+        );
+      })}
+      {conditions.map((c, i) => {
+        const gx = padL + i * groupW + 6;
+        return (
+          <g key={i}>
+            {series.map((s, si) => {
+              const v = c[s];
+              const h = (v / 100) * innerH;
+              return (
+                <g key={s}>
+                  <rect x={gx + si * (barW + 1)} y={padT + innerH - h} width={barW} height={h} fill={colors[s]} rx={1.5} />
+                  {(s === "structural" && v <= 50) && (
+                    <text x={gx + si * (barW + 1) + barW / 2} y={padT + innerH - h - 3} fontSize={8} textAnchor="middle" fill="#dc2626" fontWeight={700}>{v}</text>
+                  )}
+                </g>
+              );
+            })}
+            <text x={gx + groupW / 2 - 6} y={H - padB + 12} fontSize={9} textAnchor="middle" fill="#222" fontWeight={600}>{c.label}</text>
+            <text x={gx + groupW / 2 - 6} y={H - padB + 22} fontSize={8} textAnchor="middle" fill="#888">{c.sub}</text>
+          </g>
+        );
+      })}
+      <g transform={`translate(${padL}, ${H - 6})`}>
+        {series.map((s, i) => (
+          <g key={s} transform={`translate(${i * 110}, 0)`}>
+            <rect x={0} y={-8} width={10} height={10} fill={colors[s]} rx={1} />
+            <text x={14} y={1} fontSize={9} fill="#333">
+              {s === "structural" ? "Structural" : s === "cnn" ? "Global CNN" : "Merged hybrid"}
+            </text>
+          </g>
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+function CameraAngleChart() {
+  const points = [
+    { label: "Frontal", sub: "0°", v: 88 },
+    { label: "Slight", sub: "±15°", v: 79 },
+    { label: "Side", sub: "±30°", v: 65 },
+    { label: "Severe", sub: "±45°", v: 47 },
+  ];
+  const W = 380, H = 200, padL = 32, padR = 16, padT = 18, padB = 46;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const xs = points.map((_, i) => padL + (i * innerW) / (points.length - 1));
+  const ys = points.map((p) => padT + innerH - (p.v / 100) * innerH);
+  const path = xs.map((x, i) => `${i === 0 ? "M" : "L"} ${x} ${ys[i]}`).join(" ");
+  const areaPath = `${path} L ${xs[xs.length - 1]} ${padT + innerH} L ${xs[0]} ${padT + innerH} Z`;
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+      {[0, 25, 50, 75, 100].map((y) => {
+        const yy = padT + innerH - (y / 100) * innerH;
+        return (
+          <g key={y}>
+            <line x1={padL} y1={yy} x2={W - padR} y2={yy} stroke="#e5e7eb" strokeWidth={0.6} />
+            <text x={padL - 4} y={yy + 3} fontSize={8} textAnchor="end" fill="#888">{y}</text>
+          </g>
+        );
+      })}
+      <path d={areaPath} fill="#ef4444" opacity={0.12} />
+      <path d={path} stroke="#ef4444" strokeWidth={2.2} fill="none" strokeLinejoin="round" />
+      {points.map((p, i) => (
+        <g key={i}>
+          <circle cx={xs[i]} cy={ys[i]} r={5} fill="#fff" stroke="#ef4444" strokeWidth={2} />
+          <text x={xs[i]} y={ys[i] - 11} fontSize={10} textAnchor="middle" fontWeight={700} fill="#b91c1c">{p.v}%</text>
+          <text x={xs[i]} y={H - padB + 14} fontSize={9.5} textAnchor="middle" fill="#222" fontWeight={600}>{p.label}</text>
+          <text x={xs[i]} y={H - padB + 26} fontSize={9} textAnchor="middle" fill="#888">{p.sub}</text>
+        </g>
+      ))}
+      <text x={padL} y={padT - 5} fontSize={9} fill="#888">Detection accuracy (%)</text>
+    </svg>
   );
 }
