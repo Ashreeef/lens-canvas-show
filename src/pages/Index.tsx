@@ -4,37 +4,37 @@ import "katex/dist/katex.min.css";
 import "../styles/presentation.css";
 
 const SLIDES = [
-  "Title",
-  "Why it matters",
-  "Constraints",
-  "System architecture",
-  "Shared contract",
-  "Face mesh",
+  "Titre",
+  "Pourquoi c'est important",
+  "Contraintes",
+  "Architecture du système",
+  "Contrat partagé",
+  "DL · 3 axes",
+  "DL · ce qui blesse",
+  "Maillage du visage",
   "EAR + calibration",
   "MAR + PERCLOS",
-  "Gaze fusion",
-  "Seatbelt",
-  "Phone",
-  "Smoking",
-  "DL · 3 axes",
-  "DL · what hurts",
-  "Fatigue score",
-  "Alert engine",
-  "Config discipline",
-  "Runtime & demo",
+  "Fusion du regard",
+  "Ceinture de sécurité",
+  "Téléphone",
+  "Tabagisme",
+  "Score de fatigue",
+  "Moteur d'alertes",
+  "Discipline de config",
+  "Exécution & démo",
   "Performance",
-  "Technical decisions",
-  "Scope & roadmap",
-  "Closing",
+  "Décisions techniques",
+  "Périmètre & feuille de route",
+  "Conclusion",
 ];
 
 const TOTAL = SLIDES.length;
 
 const DEMO_VIDEOS = {
-  fatigue: { title: "Fatigue module demo", src: "/fatigue_video.mp4" },
-  seatbelt: { title: "Seatbelt module demo", src: "/seatbelt_vid.mp4" },
-  phone: { title: "Phone module demo", src: "/phone_video.mp4" },
-  smoking: { title: "Smoking module demo", src: "/smoking_video.mp4" },
+  fatigue: { title: "Démo du module fatigue", src: "/fatigue_video.mp4" },
+  seatbelt: { title: "Démo du module ceinture", src: "/seatbelt_vid.mp4" },
+  phone: { title: "Démo du module téléphone", src: "/phone_video.mp4" },
+  smoking: { title: "Démo du module tabagisme", src: "/smoking_video.mp4" },
 } as const;
 
 type DemoKey = keyof typeof DEMO_VIDEOS;
@@ -133,18 +133,18 @@ export default function Index() {
     video.currentTime = 0;
     video.play().catch(() => {
       setDemoVideoState("error");
-      setDemoVideoReason("The browser blocked playback or cannot decode this video format.");
+      setDemoVideoReason("Le navigateur a bloqué la lecture ou ne peut pas décoder ce format vidéo.");
     });
     const onTimeUpdate = () => { if (video.currentTime >= 50) video.pause(); };
     const onLoadedData = () => { setDemoVideoState("ready"); setDemoVideoReason(""); };
     const onError = () => {
       setDemoVideoState("error");
-      setDemoVideoReason("This demo video cannot be played inline in this browser (codec unsupported or file missing).");
+      setDemoVideoReason("Cette vidéo de démo ne peut pas être lue dans ce navigateur (codec non pris en charge ou fichier manquant).");
     };
     const loadingTimeout = window.setTimeout(() => {
       if (video.readyState < 2) {
         setDemoVideoState("error");
-        setDemoVideoReason("Video could not load for inline playback. Try opening it directly or re-exporting to H.264 (avc1).");
+        setDemoVideoReason("La vidéo n'a pas pu être chargée pour la lecture intégrée. Essayez de l'ouvrir directement ou de la réexporter en H.264 (avc1).");
       }
     }, 2500);
     video.addEventListener("timeupdate", onTimeUpdate);
@@ -174,7 +174,7 @@ export default function Index() {
 
       <div className="pres-container" ref={containerRef}>
 
-        {/* ===== 1 — Title ===== */}
+        {/* ===== 1 — Titre ===== */}
         <section className="slide">
           <div className="slide-bg-accent" style={{ top: -100, right: -100 }} />
           <div className="slide-bg-accent" style={{ bottom: -150, left: -150 }} />
@@ -184,22 +184,22 @@ export default function Index() {
               <div style={{ width: 1, height: 50, background: "#ddd" }} />
               <img src="/qareeb_logo.ico" alt="Qareeb" style={{ height: 64, objectFit: "contain" }} />
             </div>
-            <p className="section-label" style={{ justifyContent: "center" }}>ENSIA × QAREEB · FINAL DEFENSE · 2025–2026</p>
+            <p className="section-label" style={{ justifyContent: "center" }}>ENSIA × QAREEB · SOUTENANCE FINALE · 2025–2026</p>
             <h1 style={{ marginBottom: 8, letterSpacing: "-0.03em" }}>
               <span style={{ color: "hsl(var(--primary))" }}>Q-Vision</span>
             </h1>
             <h2 style={{ color: "hsl(var(--text-primary))", fontWeight: 400, fontSize: "clamp(20px, 2.6vw, 30px)", marginTop: 0 }}>
-              Real-time Driver Fatigue and Safety Monitoring
+              Surveillance en temps réel de la fatigue et de la sécurité du conducteur
             </h2>
             <p style={{ color: "#666", fontSize: 14, marginTop: 8, fontWeight: 500 }}>
-              Edge-AI in-cabin monitoring on Raspberry Pi 4 — fully offline
+              Surveillance en cabine par IA Edge sur Raspberry Pi 4 — entièrement hors ligne
             </p>
             <p style={{ color: "#888", fontSize: 13, marginTop: 4 }}>
-              Fatigue · Gaze · Seatbelt · Phone · Smoking — a single 15 FPS pipeline
+              Fatigue · Regard · Ceinture · Téléphone · Tabagisme — un seul pipeline à 15 FPS
             </p>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 14, padding: "8px 14px", background: "#fff7ed", border: "1px solid #ffd6a8", borderRadius: 100, fontSize: 12, color: "#7c3a05" }}>
               <span style={{ fontSize: 14 }}>🛡</span>
-              In observance of the <strong style={{ margin: "0 4px" }}>World Day for Safety and Health at Work</strong> — 28 April 2026
+              À l'occasion de la <strong style={{ margin: "0 4px" }}>Journée mondiale de la sécurité et de la santé au travail</strong> — 28 avril 2026
             </div>
             <div className="dark-strip">
               <div style={{ maxWidth: 1100, margin: "0 auto", textAlign: "center" }}>
@@ -214,34 +214,34 @@ export default function Index() {
                   ))}
                 </div>
                 <p style={{ fontSize: 12, color: "#888", margin: 0 }}>
-                  Supervised by <span style={{ color: "#bbb", fontWeight: 500 }}>Mounir Ouadi</span>
+                  Encadré par <span style={{ color: "#bbb", fontWeight: 500 }}>Mounir Ouadi</span>
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ===== 2 — Why it matters ===== */}
+        {/* ===== 2 — Pourquoi c'est important ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">PROBLEM</p>
-            <h2>Driver fatigue is a top-3 cause of fatal road crashes</h2>
+            <p className="section-label">PROBLÈME</p>
+            <h2>La fatigue au volant fait partie des 3 premières causes d'accidents mortels</h2>
             <div className="two-col" style={{ display: "flex", gap: 36, alignItems: "stretch", marginTop: 18 }}>
               <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
                 <div style={{ fontSize: "clamp(56px, 7vw, 96px)", fontWeight: 200, color: "hsl(var(--primary))", lineHeight: 1, letterSpacing: "-0.03em" }}>~20%</div>
-                <p style={{ marginTop: 8, fontSize: 15, color: "#666" }}>of fatal crashes worldwide involve driver fatigue or distraction (WHO, 2023).</p>
+                <p style={{ marginTop: 8, fontSize: 15, color: "#666" }}>des accidents mortels dans le monde impliquent la fatigue ou la distraction du conducteur (OMS, 2023).</p>
                 <div style={{ fontSize: "clamp(40px, 5vw, 64px)", fontWeight: 200, color: "hsl(var(--primary))", lineHeight: 1, marginTop: 36, letterSpacing: "-0.03em" }}>0 / 24h</div>
-                <p style={{ marginTop: 8, fontSize: 15, color: "#666" }}>internet connectivity at typical Qareeb sites — the system must run fully offline.</p>
+                <p style={{ marginTop: 8, fontSize: 15, color: "#666" }}>de connexion Internet sur les sites typiques de Qareeb — le système doit fonctionner entièrement hors ligne.</p>
               </div>
               <div style={{ flex: 1.1 }}>
                 <p style={{ fontSize: 13, color: "#666", marginBottom: 10 }}>
-                  Existing in-cabin monitoring fails the field requirement on at least one of these axes:
+                  Les solutions existantes de surveillance en cabine échouent sur au moins l'un de ces axes :
                 </p>
                 {[
-                  ["Cloud-dependent", "Privacy concerns; useless without connectivity at remote sites."],
-                  ["GPU-dependent", "Cost and power don't fit fleet vehicles. No automotive-grade GPU at this price point."],
-                  ["Single-modality", "Only EAR or only YOLO — high false-positive rate; drivers stop trusting the alerts."],
-                  ["AGPL-licensed", "Commercial blocker for Qareeb; YOLOv5 family is excluded."],
+                  ["Dépendant du cloud", "Problèmes de confidentialité ; inutile sans connectivité sur sites isolés."],
+                  ["Dépendant du GPU", "Coût et consommation incompatibles avec les flottes. Aucun GPU automobile à ce prix."],
+                  ["Mono-modalité", "Seulement EAR ou seulement YOLO — taux élevé de faux positifs ; les conducteurs ne font plus confiance aux alertes."],
+                  ["Licence AGPL", "Bloquant commercial pour Qareeb ; la famille YOLOv5 est exclue."],
                 ].map(([t, d]) => (
                   <div key={t} style={{ display: "flex", gap: 12, padding: "10px 14px", marginBottom: 8, background: "hsl(var(--surface))", borderRadius: 8, borderLeft: "3px solid hsl(var(--primary))" }}>
                     <strong style={{ fontSize: 13, minWidth: 150 }}>{t}</strong>
@@ -249,26 +249,26 @@ export default function Index() {
                   </div>
                 ))}
                 <div style={{ marginTop: 14, padding: "12px 16px", background: "#fff5f5", borderRadius: 10, border: "1px solid #ffd6d6", fontSize: 13, color: "#8b1e1e" }}>
-                  <strong>Qareeb's brief:</strong> detect fatigue <em>and</em> safety compliance (seatbelt, phone, smoking) on cheap edge hardware that ships with each commercial vehicle.
+                  <strong>Cahier des charges de Qareeb :</strong> détecter la fatigue <em>et</em> la conformité de sécurité (ceinture, téléphone, tabagisme) sur du matériel edge bon marché embarqué dans chaque véhicule utilitaire.
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ===== 3 — Constraints ===== */}
+        {/* ===== 3 — Contraintes ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">DESIGN CONSTRAINTS</p>
-            <h2>Why edge ADAS is harder than cloud ADAS</h2>
+            <p className="section-label">CONTRAINTES DE CONCEPTION</p>
+            <h2>Pourquoi l'ADAS embarqué est plus difficile que l'ADAS cloud</h2>
             <div className="two-col" style={{ display: "flex", gap: 24, marginTop: 16 }}>
               <div style={{ flex: 1.2, display: "flex", flexDirection: "column", gap: 12 }}>
                 {[
-                  { tag: "Hardware", title: "Raspberry Pi 4, CPU only", body: "4-core ARM, no GPU, no NPU. ≥ 15 FPS end-to-end is the contract — anything less stops being real-time." },
-                  { tag: "Sensor", title: "Single fixed RGB camera", body: "640×480 @ 15 fps, mounted in-cabin. Visible-light only (IR camera ordered, not yet arrived)." },
-                  { tag: "Network", title: "Fully offline", body: "No cloud inference, no telemetry uplink. Models loaded from local .task / .pt / .onnx files." },
-                  { tag: "Memory", title: "Threading, never multiprocessing", body: "RPi RAM is constrained. The GIL is a non-issue — every blocking call is I/O-bound inference, which releases it." },
-                  { tag: "License", title: "Apache 2.0 only", body: "YOLOv8 / YOLOv10 ship under Apache 2.0. YOLOv5 (AGPL-3.0) is excluded from the production build path." },
+                  { tag: "Matériel", title: "Raspberry Pi 4, CPU uniquement", body: "ARM 4 cœurs, sans GPU, sans NPU. ≥ 15 FPS de bout en bout est l'engagement — en deçà, ce n'est plus du temps réel." },
+                  { tag: "Capteur", title: "Une seule caméra RGB fixe", body: "640×480 @ 15 fps, montée en cabine. Lumière visible uniquement (caméra IR commandée, pas encore arrivée)." },
+                  { tag: "Réseau", title: "Entièrement hors ligne", body: "Pas d'inférence cloud, pas de remontée télémétrique. Modèles chargés depuis des fichiers locaux .task / .pt / .onnx." },
+                  { tag: "Mémoire", title: "Threading, jamais multiprocessing", body: "La RAM du RPi est limitée. Le GIL n'est pas un problème — chaque appel bloquant est une inférence I/O-bound, qui le libère." },
+                  { tag: "Licence", title: "Apache 2.0 uniquement", body: "YOLOv8 / YOLOv10 sont sous Apache 2.0. YOLOv5 (AGPL-3.0) est exclu du chemin de build de production." },
                 ].map((c) => (
                   <div key={c.title} className="pres-card" style={{ padding: "12px 16px" }}>
                     <span className="tag tag-blue" style={{ marginBottom: 6 }}>{c.tag}</span>
@@ -278,47 +278,47 @@ export default function Index() {
                 ))}
               </div>
               <div style={{ flex: 1, background: "hsl(var(--surface))", border: "1px solid hsl(var(--border))", borderRadius: 14, padding: 18, display: "flex", flexDirection: "column" }}>
-                <p style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "hsl(var(--primary))", margin: "0 0 8px", fontWeight: 600 }}>Edge unit</p>
+                <p style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "hsl(var(--primary))", margin: "0 0 8px", fontWeight: 600 }}>Unité Edge</p>
                 <h3 style={{ margin: "0 0 10px" }}>Raspberry Pi 4</h3>
                 <RpiBoardVisual />
                 <p style={{ fontSize: 12, color: "#777", marginTop: 12 }}>
-                  Same hardware deployed across the fleet. Same model files. Same thresholds (overridable per driver via 10-second calibration).
+                  Même matériel déployé sur toute la flotte. Mêmes fichiers de modèle. Mêmes seuils (modifiables par conducteur via une calibration de 10 secondes).
                 </p>
                 <div style={{ marginTop: "auto", fontSize: 11, color: "#999", borderTop: "1px dashed #ddd", paddingTop: 10 }}>
-                  Budget: <strong>≤ 67 ms / frame</strong> end-to-end to clear 15 FPS.
+                  Budget : <strong>≤ 67 ms / image</strong> de bout en bout pour atteindre 15 FPS.
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ===== 4 — System architecture ===== */}
+        {/* ===== 4 — Architecture du système ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">SYSTEM ARCHITECTURE</p>
-            <h2>One pipeline, six modules, one frame at a time</h2>
+            <p className="section-label">ARCHITECTURE DU SYSTÈME</p>
+            <h2>Un pipeline, six modules, image par image</h2>
             <ArchitectureDiagram />
             <div style={{ marginTop: 18, display: "flex", justifyContent: "center" }}>
-              <img src="/system_pic.png" alt="System overview diagram" style={{ maxWidth: 360, width: "100%", height: "auto", borderRadius: 10, boxShadow: "0 6px 18px rgba(0,0,0,0.08)" }} />
+              <img src="/system_pic.png" alt="Schéma de vue d'ensemble du système" style={{ maxWidth: 360, width: "100%", height: "auto", borderRadius: 10, boxShadow: "0 6px 18px rgba(0,0,0,0.08)" }} />
             </div>
             <div style={{ marginTop: 14, display: "flex", gap: 14, fontSize: 11, color: "#777", flexWrap: "wrap", justifyContent: "center" }}>
-              <span>● Solid arrow = synchronous, main thread</span>
-              <span>┄ Dashed arrow = async daemon, lock-guarded</span>
-              <span>◯ All modules read &amp; mutate a shared <code>result_dict</code></span>
+              <span>● Flèche pleine = synchrone, thread principal</span>
+              <span>┄ Flèche pointillée = démon asynchrone, protégé par verrou</span>
+              <span>◯ Tous les modules lisent et modifient un <code>result_dict</code> partagé</span>
             </div>
           </div>
         </section>
 
-        {/* ===== 5 — Shared contract ===== */}
+        {/* ===== 5 — Contrat partagé ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">DESIGN DISCIPLINE</p>
-            <h2>The <code>result_dict</code> contract</h2>
+            <p className="section-label">DISCIPLINE DE CONCEPTION</p>
+            <h2>Le contrat <code>result_dict</code></h2>
             <div className="two-col" style={{ display: "flex", gap: 32, marginTop: 12, alignItems: "flex-start" }}>
               <div style={{ flex: 1.05 }}>
                 <p style={{ fontSize: 14, color: "#555" }}>
-                  Every per-frame computation reads, mutates, and returns the same dictionary. There is no message bus,
-                  no observer pattern, no event queue. The dict <em>is</em> the frame.
+                  Chaque calcul par image lit, modifie et retourne le même dictionnaire. Pas de bus de messages,
+                  pas de pattern observer, pas de file d'événements. Le dict <em>est</em> l'image.
                 </p>
                 <CodeBlock>{`# Module 1 produces:
 result_dict["face"] = {
@@ -342,10 +342,10 @@ result_dict["alerts"]        = [...]  # ranked, deduped`}</CodeBlock>
               </div>
               <div style={{ flex: 0.95, display: "flex", flexDirection: "column", gap: 10 }}>
                 {[
-                  ["Why one dict", "Inference is sequential per frame anyway. A shared mutable object replaces 20 dataclasses and 200 lines of plumbing."],
-                  ["Why thresholds in YAML", "Re-tuning for a new driver pool is a one-file change, not a rebuild. No magic numbers in code — ever."],
-                  ["Why landmark indices in one module", "478 landmarks have non-obvious meanings. Centralizing the lookup table prevents the same EAR bug from being re-introduced in three files."],
-                  ["Why threading not multiprocessing", "Inference releases the GIL; multiprocessing would 4× the model RAM footprint, which RPi 4 cannot afford."],
+                  ["Pourquoi un seul dict", "L'inférence est de toute façon séquentielle par image. Un objet mutable partagé remplace 20 dataclasses et 200 lignes de plomberie."],
+                  ["Pourquoi les seuils en YAML", "Reparamétrer pour un nouveau pool de conducteurs est un changement de fichier, pas une recompilation. Jamais de nombres magiques dans le code."],
+                  ["Pourquoi les indices de landmarks dans un seul module", "Les 478 landmarks ont des significations non triviales. Centraliser la table évite que le même bug d'EAR soit réintroduit dans trois fichiers."],
+                  ["Pourquoi threading et non multiprocessing", "L'inférence libère le GIL ; le multiprocessing quadruplerait l'empreinte RAM des modèles, ce que le RPi 4 ne peut pas se permettre."],
                 ].map(([t, d]) => (
                   <div key={t} style={{ borderLeft: "2px solid hsl(var(--primary))", paddingLeft: 14 }}>
                     <strong style={{ fontSize: 13 }}>{t}</strong>
@@ -357,220 +357,328 @@ result_dict["alerts"]        = [...]  # ranked, deduped`}</CodeBlock>
           </div>
         </section>
 
-        {/* ===== 6 — Module 1 Face Mesh ===== */}
+        {/* ===== 6 — Module 4 · Trois axes ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">MODULE 1 · FACE MESH</p>
-            <h2>478 landmarks, free 4×4 head-pose matrix, EMA-stabilized</h2>
-            <div className="two-col" style={{ display: "flex", gap: 36, marginTop: 14, alignItems: "flex-start" }}>
-              <div style={{ flex: 1 }}>
-                <div className="pres-card" style={{ padding: "12px 14px", marginBottom: 10 }}>
-                  <strong style={{ fontSize: 13 }}>Library — MediaPipe Tasks API</strong>
-                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                    Not the legacy <code>mp.solutions.face_mesh</code>. The Tasks API loads from a local <code>.task</code> file
-                    (offline by construction) and exposes the <strong>facial transformation matrix</strong> — a free 4×4 head-pose proxy.
-                  </p>
-                </div>
-                <div className="pres-card" style={{ padding: "12px 14px", marginBottom: 10 }}>
-                  <strong style={{ fontSize: 13 }}>Head pose — solvePnP from 6 landmarks</strong>
-                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                    Nose, chin, both eye outer corners, both mouth corners. Falls back to MediaPipe's transformation
-                    matrix when <code>|yaw| &gt; 90°</code> or solvePnP fails to converge.
-                  </p>
-                </div>
-                <div className="pres-card" style={{ padding: "12px 14px", marginBottom: 10 }}>
-                  <strong style={{ fontSize: 13 }}>LandmarkStabilizer — EMA, α = 0.4</strong>
-                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                    Resets after 1 second of no detected face — prevents stale landmarks bleeding across re-acquisitions.
-                  </p>
-                </div>
-                <div className="pres-card" style={{ padding: "12px 14px" }}>
-                  <strong style={{ fontSize: 13 }}>Validity gate</strong>
-                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                    <code>|yaw| ≤ 60°</code> and <code>|pitch| ≤ 40°</code> — outside this, every downstream module sees <code>valid=False</code> and skips.
-                    Camera-mount offsets are subtracted <em>before</em> the check (configurable per vehicle).
-                  </p>
-                </div>
+            <p className="section-label">MODULE 4 · FATIGUE DL (HAMZA) — 1 / 2</p>
+            <h2>Trois approches, un pipeline d'évaluation, une leçon difficile</h2>
+            <p style={{ fontSize: 13, color: "#666", marginTop: 4, marginBottom: 12 }}>
+              Testées en parallèle : un hybride CNN+LSTM, un modèle à base de graphe <strong>LiteFat</strong>, et un classifieur State Farm 10 classes purement image.
+              Les trois ont traversé un pipeline d'évaluation unifié sur <strong>YawDD</strong> et <strong>3MDAD</strong>.
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 14 }}>
+              <AxisCard
+                color="#3b82f6"
+                badge="Axe 1"
+                title="Hybride CNN + LSTM"
+                steps={["Dlib 68 lm", "6 ratios + score AlexNet", "7-D / image", "LSTM 150 img", "Somnolent ?"]}
+                note="Structurel (LEM, REM, LEBM, REBM, MM, inclinaison de tête) ⊕ score global AlexNet → vecteur 7-D → LSTM sur 150 images. Les flux compensent leurs faiblesses respectives."
+              />
+              <AxisCard
+                color="#10b981"
+                badge="Axe 2 · LiteFat"
+                title="Graphe spatio-temporel"
+                steps={["68 lm (X,Y,c)", "ctx MobileNetV3", "X = C·w·dᵀ", "Adj. adaptative", "GCN + TCN à porte"]}
+                note="Visage modélisé comme un graphe. Adjacence adaptative apprise de bout en bout. ≈1,3 M de paramètres contre ≈226 M pour JHPFA-Net — le seul modèle du rapport pouvant raisonnablement tourner dans un véhicule."
+              />
+              <AxisCard
+                color="#f59e0b"
+                badge="Axe 3 · State Farm"
+                title="CNN de distraction à 10 classes"
+                steps={["Image cabine", "224×224 + aug.", "MobileNet/ResNet", "Tête fine-tunée", "Softmax · 10 cls"]}
+                note="Transfer learning purement image. Étend la fatigue au SMS / téléphone / boisson / atteinte / cheveux / parole. Split par conducteur obligatoire — un split aléatoire gonfle silencieusement la précision."
+              />
+            </div>
+            <div className="two-col" style={{ display: "flex", gap: 16, alignItems: "stretch" }}>
+              <div style={{ flex: 1.15, background: "#fff", border: "1px solid hsl(var(--border))", borderRadius: 12, padding: "12px 14px" }}>
+                <p style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--primary))", margin: "0 0 6px", fontWeight: 600 }}>
+                  Constat clé · écart papier-vs-réalité
+                </p>
+                <PaperVsRealityChart />
               </div>
-              <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10 }}>
-                <div style={{ width: "100%", background: "#fff", borderRadius: 12, border: "1px solid hsl(var(--border))", padding: 12 }}>
-                  <img src="/face_mesh_overview.png" alt="MediaPipe face mesh — 478 landmarks" style={{ width: "100%", maxHeight: 280, objectFit: "contain", borderRadius: 8 }} />
-                  <p style={{ fontSize: 11, color: "#888", textAlign: "center", marginTop: 8 }}>478 landmarks per frame · 5 iris points / eye · 3-D normalized coordinates</p>
+              <div style={{ flex: 0.85, display: "flex", flexDirection: "column", gap: 8 }}>
+                <div className="pres-card" style={{ padding: "10px 14px", background: "#fff5f5", borderColor: "#ffd6d6" }}>
+                  <strong style={{ fontSize: 12, color: "#8b1e1e" }}>YOLOv8 in-domain sur DDD</strong>
+                  <p style={{ margin: "2px 0 0", fontSize: 11, color: "#8b1e1e" }}>
+                    Précision 0,999 · Rappel 1,000 · mAP 0,995 — semble parfait.
+                  </p>
                 </div>
-                <div style={{ width: "100%", background: "hsl(var(--surface))", border: "1px solid hsl(var(--border))", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#555" }}>
-                  <strong>Why this stack:</strong> offline-capable, free transformation matrix, actively maintained, Apache 2.0.
-                  No PyTorch dependency on the inference path — only ONNX Runtime + MediaPipe.
+                <div className="pres-card" style={{ padding: "10px 14px", background: "#fff5f5", borderColor: "#ffd6d6" }}>
+                  <strong style={{ fontSize: 12, color: "#8b1e1e" }}>YOLOv8 cross-dataset sur YawDD</strong>
+                  <p style={{ margin: "2px 0 0", fontSize: 11, color: "#8b1e1e" }}>
+                    Précision ≈ 0,50 · F1 = <strong>0,06</strong> · AUC ≈ 0,54 — à peine mieux que le hasard.
+                  </p>
+                </div>
+                <div style={{ background: "#0f172a", color: "#e2e8f0", borderRadius: 10, padding: "10px 14px", fontSize: 12, lineHeight: 1.5 }}>
+                  <strong style={{ color: "#fbbf24" }}>Et alors ?</strong> Les modèles s'appuient sur des indices spécifiques au dataset. Changez l'angle de caméra, la lumière ou le pool de conducteurs et ces indices disparaissent. La précision sur un seul dataset n'est <em>pas</em> une métrique de déploiement.
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ===== 7 — EAR + calibration ===== */}
+        {/* ===== 7 — Module 4 · Ce qui blesse ===== */}
+        <section className="slide">
+          <div className="slide-inner">
+            <p className="section-label">MODULE 4 · FATIGUE DL (HAMZA) — 2 / 2</p>
+            <h2>Éclairage et angle pèsent plus que le choix d'architecture</h2>
+            <div className="two-col" style={{ display: "flex", gap: 16, marginTop: 12, alignItems: "stretch" }}>
+              <div style={{ flex: 1.05, background: "#fff", border: "1px solid hsl(var(--border))", borderRadius: 12, padding: "12px 14px" }}>
+                <p style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--primary))", margin: "0 0 6px", fontWeight: 600 }}>
+                  Éclairage et occlusion (style NTHU-DDD)
+                </p>
+                <LightingOcclusionChart />
+                <p style={{ fontSize: 11, color: "#666", margin: "6px 0 0" }}>
+                  Le structurel s'effondre à <strong>38 %</strong> sur Night-Glasses (Dlib perd les landmarks en IR). L'hybride reste <strong>≥ 80 %</strong> partout.
+                </p>
+              </div>
+              <div style={{ flex: 0.95, background: "#fff", border: "1px solid hsl(var(--border))", borderRadius: 12, padding: "12px 14px" }}>
+                <p style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--primary))", margin: "0 0 6px", fontWeight: 600 }}>
+                  Angle de caméra (3MDAD)
+                </p>
+                <CameraAngleChart />
+                <p style={{ fontSize: 11, color: "#666", margin: "6px 0 0" }}>
+                  <strong>88 % → 47 %</strong> lorsque la caméra passe de frontale à ±45°. Les datasets sont entraînés de face ; les caméras de production ne sont pas placées de face.
+                </p>
+              </div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8, marginTop: 14 }}>
+              {[
+                { n: "01", color: "#ef4444", title: "Écart papier-vs-réalité", body: "Précision sur un seul dataset ≠ performance en déploiement." },
+                { n: "02", color: "#f59e0b", title: "Éclairage + angle dominent", body: "Un modèle simple au bon angle bat un modèle sophistiqué au mauvais angle." },
+                { n: "03", color: "#10b981", title: "L'hybride dégrade en douceur", body: "Le CNN+LSTM fusionné reste ≥ 80 % sur chaque scénario NTHU, y compris Night-Glasses." },
+                { n: "04", color: "#3b82f6", title: "Le léger est obligatoire", body: "Les cibles embarquées excluent les stacks lourds — LiteFat (1,3 M paramètres) est la direction réaliste." },
+                { n: "05", color: "#8b5cf6", title: "Splits par sujet", body: "Les splits aléatoires placent le même conducteur en train + val. Toujours grouper par conducteur." },
+              ].map((c) => (
+                <div key={c.n} className="pres-card" style={{ padding: "10px 12px", borderTop: `3px solid ${c.color}` }}>
+                  <div style={{ fontSize: 10, color: c.color, fontWeight: 700, letterSpacing: "0.05em" }}>LEÇON {c.n}</div>
+                  <strong style={{ fontSize: 12, display: "block", marginTop: 4 }}>{c.title}</strong>
+                  <p style={{ margin: "3px 0 0", fontSize: 11, color: "#666", lineHeight: 1.4 }}>{c.body}</p>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 12, display: "flex", gap: 12 }}>
+              <div style={{ flex: 1, background: "#fff7ed", border: "1px solid #ffd6a8", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#7c3a05" }}>
+                <strong>Pourquoi ce n'est pas sur le chemin principal RPi 4 de Q-Vision.</strong> Même LiteFat (le plus petit des trois) est plus lourd qu'EAR/MAR/PERCLOS, et l'écart cross-dataset signifie qu'on ne pouvait pas faire confiance à une tête de fatigue boîte noire dans un véhicule pour lequel nous n'avions pas fine-tuné. Module 2 + FatigueScorer reste le chemin déployé ; le travail DL éclaire les modes de défaillance de Q-Vision (IR, hors axe) et oriente la feuille de route caméra IR.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== 8 — Module 1 Maillage du visage ===== */}
+        <section className="slide">
+          <div className="slide-inner">
+            <p className="section-label">MODULE 1 · MAILLAGE DU VISAGE</p>
+            <h2>478 landmarks, matrice de pose 4×4 gratuite, stabilisée par EMA</h2>
+            <div className="two-col" style={{ display: "flex", gap: 36, marginTop: 14, alignItems: "flex-start" }}>
+              <div style={{ flex: 1 }}>
+                <div className="pres-card" style={{ padding: "12px 14px", marginBottom: 10 }}>
+                  <strong style={{ fontSize: 13 }}>Bibliothèque — MediaPipe Tasks API</strong>
+                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
+                    Pas l'ancienne <code>mp.solutions.face_mesh</code>. La Tasks API charge depuis un fichier local <code>.task</code>
+                    (hors ligne par construction) et expose la <strong>matrice de transformation faciale</strong> — un proxy 4×4 gratuit pour la pose de tête.
+                  </p>
+                </div>
+                <div className="pres-card" style={{ padding: "12px 14px", marginBottom: 10 }}>
+                  <strong style={{ fontSize: 13 }}>Pose de tête — solvePnP à partir de 6 landmarks</strong>
+                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
+                    Nez, menton, coins externes des deux yeux, coins de la bouche. Repli sur la matrice de transformation MediaPipe
+                    lorsque <code>|yaw| &gt; 90°</code> ou que solvePnP ne converge pas.
+                  </p>
+                </div>
+                <div className="pres-card" style={{ padding: "12px 14px", marginBottom: 10 }}>
+                  <strong style={{ fontSize: 13 }}>LandmarkStabilizer — EMA, α = 0,4</strong>
+                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
+                    Réinitialisé après 1 seconde sans visage détecté — empêche les anciens landmarks de contaminer les ré-acquisitions.
+                  </p>
+                </div>
+                <div className="pres-card" style={{ padding: "12px 14px" }}>
+                  <strong style={{ fontSize: 13 }}>Filtre de validité</strong>
+                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
+                    <code>|yaw| ≤ 60°</code> et <code>|pitch| ≤ 40°</code> — en dehors, chaque module en aval voit <code>valid=False</code> et passe.
+                    Les offsets de montage caméra sont soustraits <em>avant</em> le contrôle (configurable par véhicule).
+                  </p>
+                </div>
+              </div>
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10 }}>
+                <div style={{ width: "100%", background: "#fff", borderRadius: 12, border: "1px solid hsl(var(--border))", padding: 12 }}>
+                  <img src="/face_mesh_overview.png" alt="Maillage du visage MediaPipe — 478 landmarks" style={{ width: "100%", maxHeight: 280, objectFit: "contain", borderRadius: 8 }} />
+                  <p style={{ fontSize: 11, color: "#888", textAlign: "center", marginTop: 8 }}>478 landmarks par image · 5 points d'iris / œil · coordonnées 3-D normalisées</p>
+                </div>
+                <div style={{ width: "100%", background: "hsl(var(--surface))", border: "1px solid hsl(var(--border))", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#555" }}>
+                  <strong>Pourquoi cette stack :</strong> capable hors ligne, matrice de transformation gratuite, activement maintenue, Apache 2.0.
+                  Pas de dépendance PyTorch sur le chemin d'inférence — uniquement ONNX Runtime + MediaPipe.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== 9 — EAR + calibration ===== */}
         <section className="slide">
           <div className="slide-inner">
             <p className="section-label">MODULE 2 · FATIGUE — EAR</p>
-            <h2>Eye Aspect Ratio, calibrated per driver</h2>
+            <h2>Eye Aspect Ratio, calibré par conducteur</h2>
             <div className="two-col" style={{ display: "flex", gap: 36, alignItems: "flex-start", marginTop: 14 }}>
               <div style={{ flex: 1 }}>
                 <div style={{ background: "#fff", borderRadius: 12, border: "1px solid hsl(var(--border))", padding: 10, marginBottom: 10 }}>
-                  <img src="/ear.png" alt="EAR — open eye vs closed eye, six landmarks" style={{ width: "100%", maxHeight: 170, objectFit: "contain", display: "block" }} />
+                  <img src="/ear.png" alt="EAR — œil ouvert vs œil fermé, six landmarks" style={{ width: "100%", maxHeight: 170, objectFit: "contain", display: "block" }} />
                 </div>
                 <div className="formula-block">
                   <Latex display>{String.raw`\text{EAR} = \frac{\|P_2 - P_6\| + \|P_3 - P_5\|}{2 \cdot \|P_1 - P_4\|}`}</Latex>
                 </div>
                 <p style={{ fontSize: 12, color: "#666", margin: "0 0 12px" }}>
-                  Right eye <code>[33, 160, 158, 133, 153, 144]</code> · Left eye <code>[362, 385, 387, 263, 373, 380]</code>.
-                  Scale-invariant ratio · 10-frame rolling mean · per-eye, then averaged.
+                  Œil droit <code>[33, 160, 158, 133, 153, 144]</code> · Œil gauche <code>[362, 385, 387, 263, 373, 380]</code>.
+                  Ratio invariant à l'échelle · moyenne glissante sur 10 images · par œil, puis moyenné.
                 </p>
                 <div className="pres-card" style={{ padding: "12px 14px", marginBottom: 10, background: "#f0fdf4", borderColor: "#86efac" }}>
-                  <strong style={{ fontSize: 13, color: "#15803d" }}>EARCalibrator — 10 s warmup</strong>
+                  <strong style={{ fontSize: 13, color: "#15803d" }}>EARCalibrator — préchauffe 10 s</strong>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "#365314" }}>
-                    Collects open-eye samples, rejects outliers outside [0.10, 0.65], computes baseline.
+                    Collecte des échantillons œil ouvert, rejette les valeurs aberrantes hors [0,10 ; 0,65], calcule la baseline.
                     <br />
                     <code>alert_threshold = baseline × 0.75</code>
                     <br />
                     <code>perclos_threshold = baseline × 0.27</code>
                   </p>
                   <p style={{ margin: "6px 0 0", fontSize: 11, color: "#365314", fontStyle: "italic" }}>
-                    Why: anatomy varies by ~30% across drivers. Universal thresholds either miss tired drivers with naturally narrow eyes or false-fire on wide-eyed drivers.
+                    Pourquoi : l'anatomie varie d'environ 30 % entre conducteurs. Les seuils universels manquent les conducteurs fatigués aux yeux naturellement étroits, ou se déclenchent à tort sur les conducteurs aux yeux larges.
                   </p>
                 </div>
               </div>
               <div style={{ flex: 1 }}>
-                <h3 style={{ fontSize: 16 }}>Two EAR-driven alerts</h3>
+                <h3 style={{ fontSize: 16 }}>Deux alertes pilotées par EAR</h3>
                 <div className="threshold-row" style={{ borderColor: "#e65100" }}>
-                  <span className="tag tag-orange">Drowsiness (EAR)</span>
-                  <span style={{ fontSize: 12 }}>EAR &lt; alert_threshold for <strong>12 frames</strong> ≈ 800 ms</span>
+                  <span className="tag tag-orange">Somnolence (EAR)</span>
+                  <span style={{ fontSize: 12 }}>EAR &lt; alert_threshold pendant <strong>12 images</strong> ≈ 800 ms</span>
                 </div>
                 <div className="threshold-row" style={{ borderColor: "hsl(var(--primary))" }}>
-                  <span className="tag tag-red">Fatigue (EAR Trend)</span>
-                  <span style={{ fontSize: 12 }}>30-frame buffer · first-half mean − second-half mean &gt; <strong>0.06</strong></span>
+                  <span className="tag tag-red">Fatigue (tendance EAR)</span>
+                  <span style={{ fontSize: 12 }}>Buffer de 30 images · moyenne première moitié − moyenne seconde moitié &gt; <strong>0,06</strong></span>
                 </div>
                 <div style={{ background: "#e8f4fd", border: "1px solid #bbdefb", borderRadius: 10, padding: "10px 14px", marginTop: 12, fontSize: 12, color: "#1565c0" }}>
-                  <strong>Why 12 frames @ 15 FPS = 800 ms?</strong> Longer than any normal blink (≤ 400 ms). Below this, blinks would false-fire.
+                  <strong>Pourquoi 12 images @ 15 FPS = 800 ms ?</strong> Plus long qu'un clignement normal (≤ 400 ms). En dessous, les clignements déclencheraient à tort.
                 </div>
                 <div style={{ background: "#fff7ed", border: "1px solid #ffd6a8", borderRadius: 10, padding: "10px 14px", marginTop: 10, fontSize: 12, color: "#7c3a05" }}>
-                  <strong>One-shot trend alert.</strong> "Fatigue (EAR Trend)" fires once, then re-arms only after recovery — prevents the trend signal from spamming the driver.
+                  <strong>Alerte de tendance unique.</strong> « Fatigue (tendance EAR) » se déclenche une fois, puis se réarme seulement après récupération — empêche le signal de tendance de spammer le conducteur.
                 </div>
                 <div style={{ background: "hsl(var(--surface))", borderRadius: 10, padding: "10px 14px", marginTop: 10, fontSize: 12, color: "#555", borderLeft: "3px solid hsl(var(--primary))" }}>
-                  <strong>In Module 6:</strong> when the global fatigue band drives, these sub-alerts are suppressed — the system speaks with one voice.
+                  <strong>Dans le Module 6 :</strong> lorsque la bande globale de fatigue prend le relais, ces sous-alertes sont supprimées — le système parle d'une seule voix.
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ===== 8 — MAR + PERCLOS ===== */}
+        {/* ===== 10 — MAR + PERCLOS ===== */}
         <section className="slide">
           <div className="slide-inner">
             <p className="section-label">MODULE 2 · FATIGUE — MAR &amp; PERCLOS</p>
-            <h2>Yawning + percentage-of-eye-closure</h2>
+            <h2>Bâillements + pourcentage de fermeture des yeux</h2>
             <div className="two-col" style={{ display: "flex", gap: 32, marginTop: 12 }}>
               <div style={{ flex: 1 }}>
-                <h3>MAR — Mouth Aspect Ratio</h3>
+                <h3>MAR — Mouth Aspect Ratio (ratio d'aspect de la bouche)</h3>
                 <div style={{ background: "#fff", borderRadius: 12, border: "1px solid hsl(var(--border))", padding: 10, marginBottom: 10 }}>
-                  <img src="/mar.jpg" alt="MAR — closed mouth vs open mouth landmarks" style={{ width: "100%", maxHeight: 150, objectFit: "contain", display: "block" }} />
+                  <img src="/mar.jpg" alt="MAR — bouche fermée vs bouche ouverte, landmarks" style={{ width: "100%", maxHeight: 150, objectFit: "contain", display: "block" }} />
                 </div>
                 <div className="formula-block">
                   <Latex display>{String.raw`\text{MAR} = \frac{\|\text{top} - \text{bottom}\|}{\|\text{left} - \text{right}\|}`}</Latex>
                 </div>
                 <p style={{ fontSize: 12, color: "#666" }}>
-                  Indices <strong>13</strong> (upper-lip center), <strong>14</strong> (lower-lip center), <strong>78</strong> (left corner), <strong>308</strong> (right corner).
+                  Indices <strong>13</strong> (centre lèvre supérieure), <strong>14</strong> (centre lèvre inférieure), <strong>78</strong> (coin gauche), <strong>308</strong> (coin droit).
                 </p>
                 <div style={{ background: "#e8f4fd", border: "1px solid #bbdefb", borderRadius: 10, padding: "10px 14px", marginTop: 8, fontSize: 12, color: "#1565c0" }}>
-                  <strong>Why centers (13/14) vs 82/87/312/317?</strong> 13/14 are the extreme vertical points and move ~2× as much during a yawn — cleaner signal, less noise.
+                  <strong>Pourquoi les centres (13/14) plutôt que 82/87/312/317 ?</strong> 13/14 sont les points verticaux extrêmes et bougent ~2× plus pendant un bâillement — signal plus propre, moins de bruit.
                 </div>
                 <div className="threshold-row" style={{ borderColor: "#e65100", marginTop: 10 }}>
-                  <span className="tag tag-orange">Yawn alert</span>
-                  <span style={{ fontSize: 12 }}>MAR &gt; <strong>0.55</strong> sustained for <strong>2.5 s</strong> (was 2.0 — tightened against speech)</span>
+                  <span className="tag tag-orange">Alerte bâillement</span>
+                  <span style={{ fontSize: 12 }}>MAR &gt; <strong>0,55</strong> maintenu pendant <strong>2,5 s</strong> (auparavant 2,0 — durci contre la parole)</span>
                 </div>
                 <div className="threshold-row" style={{ borderColor: "hsl(var(--primary))" }}>
-                  <span className="tag tag-red">Yawn frequency</span>
-                  <span style={{ fontSize: 12 }}><strong>3+</strong> confirmed yawns in rolling <strong>5-minute</strong> window</span>
+                  <span className="tag tag-red">Fréquence des bâillements</span>
+                  <span style={{ fontSize: 12 }}><strong>3+</strong> bâillements confirmés sur une fenêtre glissante de <strong>5 minutes</strong></span>
                 </div>
               </div>
               <div style={{ flex: 1 }}>
-                <h3>PERCLOS — Percentage of Eye Closure</h3>
+                <h3>PERCLOS — Pourcentage de fermeture des yeux</h3>
                 <div className="formula-block">
                   <Latex display>{String.raw`\text{PERCLOS} = \frac{N_{\text{closed}}}{N_{\text{window}}} \quad \text{window} = 60\,\text{s} \times \text{fps}`}</Latex>
                 </div>
                 <PerclosBar />
                 <p style={{ fontSize: 12, color: "#666", marginTop: 6 }}>
-                  900 frames @ 15 FPS · returns <code>None</code> until buffer fills (the overlay shows "buffering…" for the first 60 s).
+                  900 images @ 15 FPS · retourne <code>None</code> jusqu'au remplissage du buffer (l'overlay affiche « buffering… » pendant les 60 premières secondes).
                 </p>
                 <div className="threshold-row" style={{ borderColor: "hsl(var(--primary))", marginTop: 8 }}>
-                  <span className="tag tag-red">Alert</span>
-                  <span style={{ fontSize: 12 }}>PERCLOS &gt; <strong>15%</strong> sustained closure</span>
+                  <span className="tag tag-red">Alerte</span>
+                  <span style={{ fontSize: 12 }}>PERCLOS &gt; <strong>15 %</strong> de fermeture soutenue</span>
                 </div>
                 <div style={{ background: "#fff7ed", border: "1px solid #ffd6a8", borderRadius: 10, padding: "10px 14px", marginTop: 10, fontSize: 12, color: "#7c3a05" }}>
-                  <strong>Why 60 seconds?</strong> Industry convention since FHWA validated PERCLOS as the gold-standard drowsiness metric in the 1990s. A single blink doesn't move the needle; sustained microsleep does.
+                  <strong>Pourquoi 60 secondes ?</strong> Convention de l'industrie depuis que la FHWA a validé PERCLOS comme métrique de référence de la somnolence dans les années 1990. Un clignement isolé ne change rien ; un microsommeil prolongé, si.
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ===== 9 — Gaze fusion ===== */}
+        {/* ===== 11 — Fusion du regard ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">MODULE 3 · GAZE</p>
-            <h2>Two-tier fusion: head pose primary, iris fallback</h2>
+            <p className="section-label">MODULE 3 · REGARD</p>
+            <h2>Fusion à deux niveaux : pose de tête en primaire, iris en repli</h2>
             <div className="two-col" style={{ display: "flex", gap: 32, marginTop: 14, alignItems: "flex-start" }}>
               <div style={{ flex: 1.1 }}>
                 <div className="pres-card" style={{ padding: "12px 14px", marginBottom: 10 }}>
-                  <strong style={{ fontSize: 13 }}>1. Head-pose primary (always available)</strong>
+                  <strong style={{ fontSize: 13 }}>1. Pose de tête en primaire (toujours disponible)</strong>
                   <div style={{ fontFamily: "'Courier New', monospace", fontSize: 12, marginTop: 6, padding: "8px 10px", background: "hsl(var(--surface))", borderRadius: 6 }}>
-                    |yaw| &gt; 20°  → "left" / "right"<br />
-                    pitch  &gt; 15°  → "down"<br />
-                    pitch  &lt; -10° → "up"<br />
-                    otherwise     → fall through to iris
+                    |yaw| &gt; 20°  → « gauche » / « droite »<br />
+                    pitch  &gt; 15°  → « bas »<br />
+                    pitch  &lt; -10° → « haut »<br />
+                    sinon         → repli sur l'iris
                   </div>
                 </div>
                 <div className="pres-card" style={{ padding: "12px 14px", marginBottom: 10 }}>
-                  <strong style={{ fontSize: 13 }}>2. Iris deviation (head near-forward only)</strong>
+                  <strong style={{ fontSize: 13 }}>2. Déviation de l'iris (tête quasi-droite uniquement)</strong>
                   <div className="formula-block" style={{ margin: "6px 0 0", padding: "10px 14px" }}>
                     <Latex display>{String.raw`\Delta h = h - h_{\text{neutral}},\ \Delta v = v - v_{\text{neutral}}`}</Latex>
                   </div>
                   <p style={{ margin: "6px 0 0", fontSize: 12, color: "#666" }}>
-                    Thresholds: <code>|Δh| &gt; 0.14</code> · <code>Δv &lt; -0.10</code> (up) · <code>Δv &gt; 0.12</code> (down).
-                    <br />Neutral = <em>median</em> of calibration samples (robust to outliers).
+                    Seuils : <code>|Δh| &gt; 0,14</code> · <code>Δv &lt; -0,10</code> (haut) · <code>Δv &gt; 0,12</code> (bas).
+                    <br />Neutre = <em>médiane</em> des échantillons de calibration (robuste aux valeurs aberrantes).
                   </p>
                 </div>
                 <div className="pres-card" style={{ padding: "12px 14px", background: "#fff7ed", borderColor: "#ffd6a8" }}>
-                  <strong style={{ fontSize: 13, color: "#b45309" }}>Calibration gating — the non-trivial part</strong>
+                  <strong style={{ fontSize: 13, color: "#b45309" }}>Filtrage de calibration — la partie non triviale</strong>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "#7c3a05" }}>
-                    Calibration samples are only collected when <code>|yaw| &lt; 10°</code> AND <code>|pitch| &lt; 8°</code>.
-                    Iris ratios distort in 3-D projection at large head angles; if we accepted those, "forward" itself would be biased.
+                    Les échantillons de calibration sont uniquement collectés lorsque <code>|yaw| &lt; 10°</code> ET <code>|pitch| &lt; 8°</code>.
+                    Les ratios d'iris se déforment en projection 3-D à grands angles de tête ; si on les acceptait, le « droit devant » lui-même serait biaisé.
                   </p>
                 </div>
               </div>
               <div style={{ flex: 0.9 }}>
-                <h3 style={{ fontSize: 16 }}>Stability &amp; alerting</h3>
+                <h3 style={{ fontSize: 16 }}>Stabilité & alertes</h3>
                 <div className="threshold-row" style={{ borderColor: "#e65100" }}>
                   <span className="tag tag-orange">confirm_frames</span>
-                  <span style={{ fontSize: 12 }}><strong>8 frames</strong> ≈ 533 ms before <code>stable_direction</code> changes</span>
+                  <span style={{ fontSize: 12 }}><strong>8 images</strong> ≈ 533 ms avant que <code>stable_direction</code> change</span>
                 </div>
                 <div className="threshold-row" style={{ borderColor: "hsl(var(--primary))" }}>
-                  <span className="tag tag-red">Distraction (Gaze)</span>
-                  <span style={{ fontSize: 12 }}>Stable non-forward for <strong>4.0 s</strong> (was 2.5 — passes mirror checks)</span>
+                  <span className="tag tag-red">Distraction (Regard)</span>
+                  <span style={{ fontSize: 12 }}>Non-droit-devant stable pendant <strong>4,0 s</strong> (auparavant 2,5 — passe les vérifications de rétroviseurs)</span>
                 </div>
                 <div style={{ marginTop: 12, background: "hsl(var(--surface))", border: "1px solid hsl(var(--border))", borderRadius: 10, padding: "10px 14px" }}>
-                  <strong style={{ fontSize: 12, letterSpacing: "0.05em", textTransform: "uppercase", color: "#666" }}>Overlay debug indicator</strong>
+                  <strong style={{ fontSize: 12, letterSpacing: "0.05em", textTransform: "uppercase", color: "#666" }}>Indicateur de débogage de l'overlay</strong>
                   <div style={{ display: "flex", gap: 12, marginTop: 6, fontSize: 12 }}>
-                    <span><code>[H]</code> head-driven</span>
-                    <span><code>[I]</code> iris-driven</span>
-                    <span><code>[?]</code> pre-calibration</span>
+                    <span><code>[H]</code> piloté par tête</span>
+                    <span><code>[I]</code> piloté par iris</span>
+                    <span><code>[?]</code> pré-calibration</span>
                   </div>
                 </div>
                 <div style={{ marginTop: 14, background: "#fff5f5", border: "1px solid #ffd6d6", borderRadius: 10, padding: "10px 14px" }}>
-                  <strong style={{ fontSize: 12, color: "#8b1e1e" }}>Bug history (debugging maturity)</strong>
+                  <strong style={{ fontSize: 12, color: "#8b1e1e" }}>Historique des bugs (maturité de débogage)</strong>
                   <ul style={{ margin: "6px 0 0", paddingLeft: 16, fontSize: 11, color: "#8b1e1e", lineHeight: 1.6 }}>
-                    <li>Phantom L/R at large yaw → fixed by head-primary</li>
-                    <li>Calibration mid-glance → fixed by gating</li>
-                    <li>"Up" missing entirely → added <code>Δv &lt; -threshold</code> branch</li>
-                    <li>Pre-cal up/down swapped → fixed</li>
-                    <li>Mirror-check false fires → confirm 8, alert 4.0 s</li>
+                    <li>G/D fantômes à grand yaw → résolu par la primauté de la tête</li>
+                    <li>Calibration en plein coup d'œil → résolu par filtrage</li>
+                    <li>« Haut » totalement manquant → ajout de la branche <code>Δv &lt; -seuil</code></li>
+                    <li>Haut/bas inversés en pré-cal → corrigé</li>
+                    <li>Faux déclenchements sur vérification de rétroviseurs → confirm 8, alerte 4,0 s</li>
                   </ul>
                 </div>
               </div>
@@ -578,13 +686,13 @@ result_dict["alerts"]        = [...]  # ranked, deduped`}</CodeBlock>
           </div>
         </section>
 
-        {/* ===== 10 — Seatbelt ===== */}
+        {/* ===== 12 — Ceinture ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">MODULE 5 · COMPLIANCE — SEATBELT</p>
-            <h2>Three pipelines, runtime-selectable</h2>
+            <p className="section-label">MODULE 5 · CONFORMITÉ — CEINTURE</p>
+            <h2>Trois pipelines, sélectionnables à l'exécution</h2>
             <p style={{ fontSize: 13, color: "#666", marginTop: 4, marginBottom: 14 }}>
-              All three run in the <code>ComplianceWorker</code> daemon thread. Async results merged into <code>result_dict</code> each frame; main face-mesh loop never blocks on YOLO.
+              Les trois s'exécutent dans le thread démon <code>ComplianceWorker</code>. Résultats asynchrones fusionnés dans <code>result_dict</code> à chaque image ; la boucle principale du face-mesh ne bloque jamais sur YOLO.
             </p>
             <div style={{ display: "flex", gap: 14, marginBottom: 14 }}>
               {[
@@ -592,29 +700,29 @@ result_dict["alerts"]        = [...]  # ranked, deduped`}</CodeBlock>
                   n: "1",
                   flag: "--seatbelt-pipeline 1",
                   title: "YOLOv5s → YOLOv8n",
-                  desc: "ROI extraction then patch classification.",
-                  caveat: "YOLOv5 is AGPL-3.0 — used for now via torch.hub weights. Will be retrained on YOLOv8 before Qareeb deployment.",
+                  desc: "Extraction de ROI puis classification du patch.",
+                  caveat: "YOLOv5 est en AGPL-3.0 — utilisé pour l'instant via les poids torch.hub. Sera ré-entraîné sur YOLOv8 avant le déploiement Qareeb.",
                   rec: false,
                 },
                 {
                   n: "2",
-                  flag: "--seatbelt-pipeline 2 (default)",
-                  title: "Pose ROI → YOLOv8n + MobileNetV3 → RANSAC + EMA",
-                  desc: "MediaPipe Pose crops the torso, YOLOv8n detects, MobileNetV3 classifies the patch, RANSAC fits a diagonal-strap line as a geometric prior. Fusion: CNN 0.10 / YOLO 0.90.",
-                  caveat: "Most robust. Default for the demo and the Qareeb MVP.",
+                  flag: "--seatbelt-pipeline 2 (par défaut)",
+                  title: "ROI Pose → YOLOv8n + MobileNetV3 → RANSAC + EMA",
+                  desc: "MediaPipe Pose découpe le torse, YOLOv8n détecte, MobileNetV3 classe le patch, RANSAC ajuste une droite diagonale de la sangle comme a priori géométrique. Fusion : CNN 0,10 / YOLO 0,90.",
+                  caveat: "La plus robuste. Choix par défaut pour la démo et le MVP Qareeb.",
                   rec: true,
                 },
                 {
                   n: "3",
                   flag: "--seatbelt-pipeline 3",
-                  title: "YOLOv8n full-frame + EMA / Majority Vote",
-                  desc: "Simplest, fastest, less robust to occlusion. Useful baseline for ablation.",
+                  title: "YOLOv8n image entière + EMA / Vote majoritaire",
+                  desc: "Le plus simple, le plus rapide, moins robuste à l'occlusion. Baseline utile pour l'ablation.",
                   caveat: "",
                   rec: false,
                 },
               ].map((p) => (
                 <div key={p.n} className="pres-card" style={{ flex: 1, position: "relative", borderColor: p.rec ? "hsl(var(--primary))" : undefined, padding: "14px 16px" }}>
-                  {p.rec && <span className="tag tag-red" style={{ position: "absolute", top: 12, right: 12 }}>Default</span>}
+                  {p.rec && <span className="tag tag-red" style={{ position: "absolute", top: 12, right: 12 }}>Par défaut</span>}
                   <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 6 }}>
                     <span style={{ fontSize: 22, fontWeight: 200, color: "hsl(var(--primary))" }}>{p.n}</span>
                     <code style={{ fontSize: 11, color: "#888" }}>{p.flag}</code>
@@ -627,286 +735,178 @@ result_dict["alerts"]        = [...]  # ranked, deduped`}</CodeBlock>
             </div>
             <div style={{ display: "flex", gap: 14 }}>
               <div className="pres-card" style={{ flex: 1, padding: "12px 14px" }}>
-                <strong style={{ fontSize: 13 }}>Asymmetric hysteresis</strong>
+                <strong style={{ fontSize: 13 }}>Hystérésis asymétrique</strong>
                 <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                  <strong>24 frames</strong> to confirm ON · <strong>27 frames (~1.8 s)</strong> to confirm OFF.
-                  <br />Quick to trust the strap, slow to commit to "off" — flicker is real, strap loss isn't.
+                  <strong>24 images</strong> pour confirmer ON · <strong>27 images (~1,8 s)</strong> pour confirmer OFF.
+                  <br />Rapide à faire confiance à la sangle, lent à acter le « off » — le scintillement est réel, la perte de sangle ne l'est pas.
                 </p>
               </div>
               <div className="pres-card" style={{ flex: 1, padding: "12px 14px" }}>
-                <strong style={{ fontSize: 13 }}>Tried and dropped — BiLSTM smoother</strong>
+                <strong style={{ fontSize: 13 }}>Essayé et abandonné — lisseur BiLSTM</strong>
                 <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                  Trained <code>seatbelt_bilstm.pt</code> as a learned alternative to the EMA. Did not improve precision/recall on our held-out clips and added latency. EMA + RANSAC kept.
+                  <code>seatbelt_bilstm.pt</code> entraîné comme alternative apprise à l'EMA. N'a pas amélioré la précision/rappel sur nos clips de test et a ajouté de la latence. EMA + RANSAC conservés.
                 </p>
               </div>
               <button
                 onClick={() => openDemo("seatbelt")}
                 style={{ alignSelf: "stretch", border: "1px solid hsl(var(--border))", background: "#fff", borderRadius: 10, padding: "10px 18px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
               >
-                ▶ Play seatbelt demo
+                ▶ Lancer la démo ceinture
               </button>
             </div>
           </div>
         </section>
 
-        {/* ===== 11 — Phone ===== */}
+        {/* ===== 13 — Téléphone ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">MODULE 5 · COMPLIANCE — PHONE</p>
-            <h2>Phone — fine-tuned YOLOv8n with label-robust class matching</h2>
+            <p className="section-label">MODULE 5 · CONFORMITÉ — TÉLÉPHONE</p>
+            <h2>Téléphone — YOLOv8n fine-tuné avec correspondance de classes robuste aux labels</h2>
             <div className="two-col" style={{ display: "flex", gap: 24, marginTop: 14, alignItems: "flex-start" }}>
               <div style={{ flex: 1.05 }}>
                 <div className="pres-card" style={{ padding: "12px 14px", marginBottom: 10 }}>
-                  <strong style={{ fontSize: 13 }}>Model — YOLOv8n fine-tuned on Roboflow phone dataset</strong>
+                  <strong style={{ fontSize: 13 }}>Modèle — YOLOv8n fine-tuné sur le dataset téléphone Roboflow</strong>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                    Apache 2.0 licensed weights and dataset (CC BY 4.0). Trained at 640×640, AdamW, 50 epochs,
-                    mosaic + horizontal flip + HSV-V augmentation, patience 20.
+                    Poids sous licence Apache 2.0 et dataset (CC BY 4.0). Entraîné en 640×640, AdamW, 50 epochs,
+                    augmentation mosaïque + flip horizontal + HSV-V, patience 20.
                   </p>
                 </div>
                 <div className="pres-card" style={{ padding: "12px 14px", marginBottom: 10 }}>
-                  <strong style={{ fontSize: 13 }}>Label-robust class matching</strong>
+                  <strong style={{ fontSize: 13 }}>Correspondance de classes robuste aux labels</strong>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                    Different datasets label phones inconsistently. We match the predicted class name (lower-cased)
-                    against the alias set <code>{"{phone, cell phone, cellphone, mobile}"}</code>. This survives
-                    swapping the model for any commercial phone-detector without code changes.
+                    Les datasets étiquettent les téléphones de façon incohérente. Nous comparons le nom de classe prédit (en minuscules)
+                    à l'ensemble d'alias <code>{"{phone, cell phone, cellphone, mobile}"}</code>. Cela permet de remplacer
+                    le modèle par n'importe quel détecteur de téléphone commercial sans modification de code.
                   </p>
                 </div>
                 <div className="pres-card" style={{ padding: "12px 14px", marginBottom: 10 }}>
-                  <strong style={{ fontSize: 13 }}>HIDDEN_CLASSES — false-positive suppressor</strong>
+                  <strong style={{ fontSize: 13 }}>HIDDEN_CLASSES — suppresseur de faux positifs</strong>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                    <code>{"{wheel, steering wheel}"}</code> are <em>actively suppressed</em>. The steering wheel is
-                    the single biggest false-positive source from a driver-camera angle (round, dark, often hand-occluded).
-                    We drop those boxes before they reach the alert engine.
+                    <code>{"{wheel, steering wheel}"}</code> sont <em>activement supprimés</em>. Le volant est
+                    la principale source de faux positifs sous l'angle d'une caméra conducteur (rond, sombre, souvent occlus par la main).
+                    Nous écartons ces boîtes avant qu'elles n'atteignent le moteur d'alertes.
                   </p>
                 </div>
                 <div className="pres-card" style={{ padding: "12px 14px" }}>
-                  <strong style={{ fontSize: 13 }}>Confidence 0.25 — deliberately lower than seatbelt</strong>
+                  <strong style={{ fontSize: 13 }}>Confiance 0,25 — délibérément plus basse que la ceinture</strong>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                    Phones are often partially occluded by the hand or held against the cheek. A higher threshold
-                    misses real calls. We compensate downstream with the 8-frame confirm + 20-frame clear hysteresis.
+                    Les téléphones sont souvent partiellement occlus par la main ou tenus contre la joue. Un seuil plus élevé
+                    rate de vrais appels. Nous compensons en aval par l'hystérésis confirm 8 images + clear 20 images.
                   </p>
                 </div>
               </div>
               <div style={{ flex: 0.95, display: "flex", flexDirection: "column", gap: 10 }}>
                 <div className="pres-card" style={{ padding: "12px 14px", background: "#fff5f5", borderColor: "#ffd6d6" }}>
-                  <strong style={{ fontSize: 13, color: "#8b1e1e" }}>Why no hybrid (hand-near-ear) for phone?</strong>
+                  <strong style={{ fontSize: 13, color: "#8b1e1e" }}>Pourquoi pas d'hybride (main-près-de-l'oreille) pour le téléphone ?</strong>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "#8b1e1e" }}>
-                    From a driver-facing camera, the ear is frequently occluded by the windshield pillar or the
-                    headrest. Hand-to-ear distance becomes a noise channel. YOLO alone outperformed every fused
-                    variant we tested.
+                    Depuis une caméra orientée conducteur, l'oreille est fréquemment occluse par le montant du pare-brise ou
+                    l'appui-tête. La distance main-oreille devient un canal de bruit. YOLO seul a surpassé toutes les variantes fusionnées
+                    que nous avons testées.
                   </p>
                 </div>
                 <div className="pres-card" style={{ padding: "12px 14px" }}>
-                  <strong style={{ fontSize: 13 }}>Pipeline placement</strong>
+                  <strong style={{ fontSize: 13 }}>Placement dans le pipeline</strong>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                    Runs inside <code>ComplianceWorker</code> alongside seatbelt and smoking — async, lock-guarded,
-                    merged into <code>result_dict</code> each frame. ~29 ms mean latency · ~41 ms p95 (laptop CPU).
+                    S'exécute dans <code>ComplianceWorker</code> aux côtés de la ceinture et du tabagisme — asynchrone, protégé par verrou,
+                    fusionné dans <code>result_dict</code> à chaque image. Latence moyenne ~29 ms · p95 ~41 ms (CPU portable).
                   </p>
                 </div>
                 <div className="pres-card" style={{ padding: "12px 14px", background: "#f0fdf4", borderColor: "#86efac" }}>
-                  <strong style={{ fontSize: 13, color: "#15803d" }}>Why not COCO out-of-the-box?</strong>
+                  <strong style={{ fontSize: 13, color: "#15803d" }}>Pourquoi pas COCO tel quel ?</strong>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "#365314" }}>
-                    COCO class 67 (cell phone) is trained on lifestyle photos, not in-cabin angles. Recall on driver
-                    footage was poor. The Roboflow-fine-tuned model lifts mAP@50 substantially on our test clips.
+                    La classe 67 de COCO (cell phone) est entraînée sur des photos lifestyle, pas sur des angles cabine. Le rappel sur des séquences
+                    conducteur était faible. Le modèle fine-tuné sur Roboflow augmente nettement le mAP@50 sur nos clips de test.
                   </p>
                 </div>
                 <button
                   onClick={() => openDemo("phone")}
                   style={{ alignSelf: "stretch", border: "1px solid hsl(var(--border))", background: "#fff", borderRadius: 10, padding: "10px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
                 >
-                  ▶ Play phone demo
+                  ▶ Lancer la démo téléphone
                 </button>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ===== 12 — Smoking ===== */}
+        {/* ===== 14 — Tabagisme ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">MODULE 5 · COMPLIANCE — SMOKING</p>
-            <h2>Smoking — third-party model + landmark gate</h2>
+            <p className="section-label">MODULE 5 · CONFORMITÉ — TABAGISME</p>
+            <h2>Tabagisme — modèle tiers + filtre par landmarks</h2>
             <div style={{ background: "#fff7ed", border: "1px solid #ffd6a8", borderRadius: 10, padding: "12px 16px", marginTop: 8, fontSize: 13, color: "#7c3a05" }}>
-              <strong>Honest disclosure.</strong> We did not train our own smoking model. In-cabin smoking datasets
-              are extremely scarce — annotated, driver-perspective footage at the scale needed for fine-tuning is
-              not publicly available, and we lacked the resources to collect and label it. We integrated an
-              open-source model instead.
+              <strong>Transparence.</strong> Nous n'avons pas entraîné notre propre modèle de tabagisme. Les datasets de tabagisme en cabine
+              sont extrêmement rares — des séquences annotées en perspective conducteur à l'échelle nécessaire au fine-tuning
+              ne sont pas publiquement disponibles, et nous manquions de ressources pour les collecter et les annoter. Nous avons donc intégré
+              un modèle open-source à la place.
             </div>
             <div className="two-col" style={{ display: "flex", gap: 24, marginTop: 14, alignItems: "flex-start" }}>
               <div style={{ flex: 1.05 }}>
                 <div className="pres-card" style={{ padding: "14px 16px", marginBottom: 10 }}>
-                  <span className="tag tag-blue">Upstream model</span>
+                  <span className="tag tag-blue">Modèle amont</span>
                   <h3 style={{ fontSize: 14, margin: "8px 0 4px" }}>alihassanml / Smoking-detection-yolo11</h3>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                    Open-source YOLO11 weights from{" "}
+                    Poids YOLO11 open-source depuis{" "}
                     <a href="https://github.com/alihassanml/Smoking-detection-yolo11" target="_blank" rel="noreferrer" style={{ color: "hsl(var(--primary))" }}>
                       github.com/alihassanml/Smoking-detection-yolo11
                     </a>.
-                    Class label <code>"Smooking"</code> (sic — kept verbatim for compatibility with the upstream weights).
+                    Étiquette de classe <code>"Smooking"</code> (sic — conservée à l'identique pour compatibilité avec les poids amont).
                   </p>
                 </div>
                 <div className="pres-card" style={{ padding: "14px 16px", marginBottom: 10 }}>
-                  <strong style={{ fontSize: 13 }}>What we added on top</strong>
+                  <strong style={{ fontSize: 13 }}>Ce que nous avons ajouté par-dessus</strong>
                   <ul style={{ margin: "6px 0 0", paddingLeft: 18, fontSize: 12, color: "#555", lineHeight: 1.7 }}>
-                    <li><strong>Branch A — landmark gate:</strong> MediaPipe Hand + Pose, hand-to-mouth distance + elbow-angle bonus + velocity penalty</li>
-                    <li><strong>Branch B — detection:</strong> the upstream YOLO11 ONNX</li>
-                    <li><strong>Score fusion:</strong> <code>s = 0.10 × landmark + 0.90 × detection</code> — detection-led, landmark-disambiguated</li>
-                    <li><strong>Temporal:</strong> 8-frame sliding window · confirm at 5+ · clear below 0.30</li>
+                    <li><strong>Branche A — filtre par landmarks :</strong> MediaPipe Hand + Pose, distance main-bouche + bonus d'angle de coude + pénalité de vitesse</li>
+                    <li><strong>Branche B — détection :</strong> l'ONNX YOLO11 amont</li>
+                    <li><strong>Fusion de scores :</strong> <code>s = 0,10 × landmark + 0,90 × détection</code> — piloté par la détection, désambiguïsé par les landmarks</li>
+                    <li><strong>Temporel :</strong> fenêtre glissante de 8 images · confirmation à 5+ · clear sous 0,30</li>
                   </ul>
                 </div>
                 <div className="pres-card" style={{ padding: "12px 14px", background: "hsl(var(--surface))" }}>
-                  <strong style={{ fontSize: 13 }}>Dual-mode integration</strong>
+                  <strong style={{ fontSize: 13 }}>Intégration en double mode</strong>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                    When wired into the full pipeline, the smoking module reuses Module 1's face landmarks rather
-                    than running its own face detector — saves one full inference per frame.
+                    Branché dans le pipeline complet, le module tabagisme réutilise les landmarks faciaux du Module 1 plutôt que
+                    de faire tourner son propre détecteur de visage — économise une inférence complète par image.
                   </p>
                 </div>
               </div>
               <div style={{ flex: 0.95, display: "flex", flexDirection: "column", gap: 10 }}>
                 <div className="pres-card" style={{ padding: "12px 14px", background: "#fff5f5", borderColor: "#ffd6d6" }}>
-                  <strong style={{ fontSize: 13, color: "#8b1e1e" }}>Honest limitations</strong>
+                  <strong style={{ fontSize: 13, color: "#8b1e1e" }}>Limites assumées</strong>
                   <ul style={{ margin: "6px 0 0", paddingLeft: 16, fontSize: 12, color: "#8b1e1e", lineHeight: 1.6 }}>
-                    <li>Upstream training data is not driver-specific — generalization to in-cabin angles is unverified</li>
-                    <li>Cigarette is a tiny object; recall drops at low resolution</li>
-                    <li>Smoke plume class is unreliable in vehicle interiors</li>
+                    <li>Les données d'entraînement amont ne sont pas spécifiques aux conducteurs — la généralisation aux angles cabine n'est pas vérifiée</li>
+                    <li>La cigarette est un petit objet ; le rappel chute en basse résolution</li>
+                    <li>La classe « panache de fumée » est peu fiable dans les habitacles</li>
                   </ul>
                 </div>
                 <div className="pres-card" style={{ padding: "12px 14px", background: "#f0fdf4", borderColor: "#86efac" }}>
-                  <strong style={{ fontSize: 13, color: "#15803d" }}>Why this is still a defensible MVP choice</strong>
+                  <strong style={{ fontSize: 13, color: "#15803d" }}>Pourquoi ce choix reste défendable pour un MVP</strong>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "#365314" }}>
-                    The fusion + temporal hysteresis layer is <em>ours</em>, and it works for any binary
-                    smoking detector. Swapping the upstream model later (once a real driver dataset exists)
-                    is a one-line change in <code>configs/model_paths.yaml</code>.
+                    La couche de fusion + hystérésis temporelle est <em>la nôtre</em>, et fonctionne avec n'importe quel détecteur
+                    binaire de tabagisme. Remplacer le modèle amont plus tard (une fois un vrai dataset conducteur disponible)
+                    est un changement d'une ligne dans <code>configs/model_paths.yaml</code>.
                   </p>
                 </div>
                 <button
                   onClick={() => openDemo("smoking")}
                   style={{ alignSelf: "stretch", border: "1px solid hsl(var(--border))", background: "#fff", borderRadius: 10, padding: "10px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
                 >
-                  ▶ Play smoking demo
+                  ▶ Lancer la démo tabagisme
                 </button>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ===== 13 — Module 4 · Three axes ===== */}
+        {/* ===== 15 — Score de fatigue ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">MODULE 4 · DL FATIGUE (HAMZA) — 1 / 2</p>
-            <h2>Three approaches, one evaluation pipeline, one hard lesson</h2>
-            <p style={{ fontSize: 13, color: "#666", marginTop: 4, marginBottom: 12 }}>
-              Tried in parallel: a hybrid CNN+LSTM, a graph-based <strong>LiteFat</strong>, and an image-only 10-class State Farm classifier.
-              All three pushed through a unified evaluation pipeline on <strong>YawDD</strong> and <strong>3MDAD</strong>.
-            </p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 14 }}>
-              <AxisCard
-                color="#3b82f6"
-                badge="Axis 1"
-                title="Hybrid CNN + LSTM"
-                steps={["Dlib 68 lm", "6 ratios + AlexNet score", "7-D / frame", "LSTM 150 frm", "Drowsy ?"]}
-                note="Structural (LEM, REM, LEBM, REBM, MM, head tilt) ⊕ AlexNet global score → 7-D vector → LSTM over 150 frames. Streams cover each other's weak spot."
-              />
-              <AxisCard
-                color="#10b981"
-                badge="Axis 2 · LiteFat"
-                title="Spatio-temporal graph"
-                steps={["68 lm (X,Y,c)", "MobileNetV3 ctx", "X = C·w·dᵀ", "Adaptive adj.", "GCN + Gated TCN"]}
-                note="Face as a graph. Adaptive adjacency learned end-to-end. ≈1.3 M params vs ≈226 M for JHPFA-Net — the only model in the report that could plausibly run in-vehicle."
-              />
-              <AxisCard
-                color="#f59e0b"
-                badge="Axis 3 · State Farm"
-                title="10-class distraction CNN"
-                steps={["Cabin image", "224×224 + aug.", "MobileNet/ResNet", "Fine-tuned head", "Softmax · 10 cls"]}
-                note="Image-only transfer learning. Extends fatigue scope to texting / phone / drink / reach / hair / talk. Driver-grouped split mandatory — random split silently inflates accuracy."
-              />
-            </div>
-            <div className="two-col" style={{ display: "flex", gap: 16, alignItems: "stretch" }}>
-              <div style={{ flex: 1.15, background: "#fff", border: "1px solid hsl(var(--border))", borderRadius: 12, padding: "12px 14px" }}>
-                <p style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--primary))", margin: "0 0 6px", fontWeight: 600 }}>
-                  Headline finding · paper-vs-reality gap
-                </p>
-                <PaperVsRealityChart />
-              </div>
-              <div style={{ flex: 0.85, display: "flex", flexDirection: "column", gap: 8 }}>
-                <div className="pres-card" style={{ padding: "10px 14px", background: "#fff5f5", borderColor: "#ffd6d6" }}>
-                  <strong style={{ fontSize: 12, color: "#8b1e1e" }}>YOLOv8 in-domain on DDD</strong>
-                  <p style={{ margin: "2px 0 0", fontSize: 11, color: "#8b1e1e" }}>
-                    Precision 0.999 · Recall 1.000 · mAP 0.995 — looks perfect.
-                  </p>
-                </div>
-                <div className="pres-card" style={{ padding: "10px 14px", background: "#fff5f5", borderColor: "#ffd6d6" }}>
-                  <strong style={{ fontSize: 12, color: "#8b1e1e" }}>YOLOv8 cross-dataset on YawDD</strong>
-                  <p style={{ margin: "2px 0 0", fontSize: 11, color: "#8b1e1e" }}>
-                    Accuracy ≈ 0.50 · F1 = <strong>0.06</strong> · AUC ≈ 0.54 — barely above chance.
-                  </p>
-                </div>
-                <div style={{ background: "#0f172a", color: "#e2e8f0", borderRadius: 10, padding: "10px 14px", fontSize: 12, lineHeight: 1.5 }}>
-                  <strong style={{ color: "#fbbf24" }}>So what?</strong> Models lean on dataset-specific cues. Change camera angle, lighting, or driver pool and the cues vanish. Single-dataset accuracy is <em>not</em> a deployment metric.
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ===== 14 — Module 4 · What hurts ===== */}
-        <section className="slide">
-          <div className="slide-inner">
-            <p className="section-label">MODULE 4 · DL FATIGUE (HAMZA) — 2 / 2</p>
-            <h2>Lighting and angle hurt more than architecture choice</h2>
-            <div className="two-col" style={{ display: "flex", gap: 16, marginTop: 12, alignItems: "stretch" }}>
-              <div style={{ flex: 1.05, background: "#fff", border: "1px solid hsl(var(--border))", borderRadius: 12, padding: "12px 14px" }}>
-                <p style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--primary))", margin: "0 0 6px", fontWeight: 600 }}>
-                  Lighting &amp; occlusion (NTHU-DDD-style)
-                </p>
-                <LightingOcclusionChart />
-                <p style={{ fontSize: 11, color: "#666", margin: "6px 0 0" }}>
-                  Structural collapses to <strong>38%</strong> on Night-Glasses (Dlib loses landmarks in IR). Hybrid stays <strong>≥ 80%</strong> everywhere.
-                </p>
-              </div>
-              <div style={{ flex: 0.95, background: "#fff", border: "1px solid hsl(var(--border))", borderRadius: 12, padding: "12px 14px" }}>
-                <p style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "hsl(var(--primary))", margin: "0 0 6px", fontWeight: 600 }}>
-                  Camera angle (3MDAD)
-                </p>
-                <CameraAngleChart />
-                <p style={{ fontSize: 11, color: "#666", margin: "6px 0 0" }}>
-                  <strong>88% → 47%</strong> as the camera moves frontal → ±45°. Datasets train head-on; production cameras don't sit head-on.
-                </p>
-              </div>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8, marginTop: 14 }}>
-              {[
-                { n: "01", color: "#ef4444", title: "Paper-vs-reality gap", body: "Single-dataset accuracy ≠ deployment performance." },
-                { n: "02", color: "#f59e0b", title: "Lighting + angle dominate", body: "A simple model on the right angle beats a fancy one on the wrong angle." },
-                { n: "03", color: "#10b981", title: "Hybrid degrades gracefully", body: "Merged CNN+LSTM stays ≥ 80% across every NTHU scenario, including Night-Glasses." },
-                { n: "04", color: "#3b82f6", title: "Lightweight is mandatory", body: "Embedded targets rule out heavy stacks — LiteFat (1.3 M params) is the realistic direction." },
-                { n: "05", color: "#8b5cf6", title: "Subject-aware splits", body: "Random splits put the same driver in train + val. Always group-by-driver." },
-              ].map((c) => (
-                <div key={c.n} className="pres-card" style={{ padding: "10px 12px", borderTop: `3px solid ${c.color}` }}>
-                  <div style={{ fontSize: 10, color: c.color, fontWeight: 700, letterSpacing: "0.05em" }}>TAKEAWAY {c.n}</div>
-                  <strong style={{ fontSize: 12, display: "block", marginTop: 4 }}>{c.title}</strong>
-                  <p style={{ margin: "3px 0 0", fontSize: 11, color: "#666", lineHeight: 1.4 }}>{c.body}</p>
-                </div>
-              ))}
-            </div>
-            <div style={{ marginTop: 12, display: "flex", gap: 12 }}>
-              <div style={{ flex: 1, background: "#fff7ed", border: "1px solid #ffd6a8", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#7c3a05" }}>
-                <strong>Why this isn't on Q-Vision's RPi 4 main path.</strong> Even LiteFat (the smallest of the three) is heavier than EAR/MAR/PERCLOS, and the cross-dataset gap means we couldn't trust a black-box fatigue head in a vehicle we hadn't fine-tuned for. Module 2 + FatigueScorer remains the deployed path; the DL work informs Q-Vision's failure modes (IR, off-axis) and shapes the IR-camera roadmap.
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ===== 12 — Fatigue Scorer ===== */}
-        <section className="slide">
-          <div className="slide-inner">
-            <p className="section-label">MODULE 6 · FATIGUE SCORER</p>
-            <h2>One number (0..1) replaces three competing alerts</h2>
+            <p className="section-label">MODULE 6 · SCORE DE FATIGUE</p>
+            <h2>Un seul nombre (0..1) remplace trois alertes concurrentes</h2>
             <div className="two-col" style={{ display: "flex", gap: 28, marginTop: 12, alignItems: "flex-start" }}>
               <div style={{ flex: 1.05 }}>
                 <p style={{ fontSize: 13, color: "#666", marginTop: 0 }}>
-                  Per-frame contributions, each clamped to <code>[0, 1]</code>:
+                  Contributions par image, chacune clampée à <code>[0, 1]</code> :
                 </p>
                 <div className="formula-block">
                   <Latex display>{String.raw`c_{\text{ear}} = \mathrm{clamp}\!\left(\frac{0.85B - \text{EAR}}{0.35\,B}\right)`}</Latex>
@@ -915,59 +915,59 @@ result_dict["alerts"]        = [...]  # ranked, deduped`}</CodeBlock>
                   <Latex display>{String.raw`c_{\text{perclos}} = \mathrm{clamp}\!\left(\frac{\text{PERCLOS}}{0.30}\right)`}</Latex>
                 </div>
                 <p style={{ fontSize: 12, color: "#666", margin: "6px 0" }}>
-                  <code>c_yawn</code> = +0.40 pulse per confirmed yawn, decays linearly over 8 s.
-                  <br /><code>c_gaze</code> = 0.6 if a Distraction (Gaze) alert is currently active.
+                  <code>c_yawn</code> = impulsion +0,40 par bâillement confirmé, décroît linéairement sur 8 s.
+                  <br /><code>c_gaze</code> = 0,6 si une alerte Distraction (Regard) est actuellement active.
                 </p>
                 <div className="formula-block">
                   <Latex display>{String.raw`\text{raw} = 0.35\,c_{\text{ear}} + 0.45\,c_{\text{perclos}} + 0.15\,c_{\text{yawn}} + 0.05\,c_{\text{gaze}}`}</Latex>
                 </div>
                 <p style={{ fontSize: 12, color: "#666" }}>
-                  EMA over <code>raw</code>: <strong>fast attack</strong> (α=0.15), <strong>slow decay</strong> (−0.05/sec absolute floor) — climbs quickly when evidence accumulates, doesn't crash to zero on a single good frame.
+                  EMA sur <code>raw</code> : <strong>attaque rapide</strong> (α=0,15), <strong>décroissance lente</strong> (plancher absolu −0,05/s) — monte vite quand les indices s'accumulent, ne s'effondre pas à zéro sur une seule bonne image.
                 </p>
               </div>
               <div style={{ flex: 0.95 }}>
-                <h3 style={{ fontSize: 16 }}>Bands with hysteresis</h3>
-                <p style={{ fontSize: 12, color: "#666" }}>To step <em>down</em> a band, the score must drop <strong>0.10</strong> below the threshold — prevents oscillation.</p>
+                <h3 style={{ fontSize: 16 }}>Bandes avec hystérésis</h3>
+                <p style={{ fontSize: 12, color: "#666" }}>Pour <em>descendre</em> d'une bande, le score doit chuter de <strong>0,10</strong> sous le seuil — évite les oscillations.</p>
                 <FatigueScoreBar />
                 <div style={{ marginTop: 14, background: "#fff5f5", border: "1px solid #ffd6d6", borderRadius: 10, padding: "12px 14px", fontSize: 12, color: "#8b1e1e" }}>
-                  <strong>Crucially:</strong> when the band drives, EAR / MAR / PERCLOS sub-alerts are <em>suppressed</em>.
-                  The system speaks with one voice on fatigue.
+                  <strong>Crucial :</strong> lorsque la bande prend le relais, les sous-alertes EAR / MAR / PERCLOS sont <em>supprimées</em>.
+                  Le système parle d'une seule voix sur la fatigue.
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ===== 13 — Alert Engine ===== */}
+        {/* ===== 16 — Moteur d'alertes ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">MODULE 6 · ALERT ENGINE &amp; AUDIO</p>
-            <h2>Three-stage post-processing, four severity tiers</h2>
+            <p className="section-label">MODULE 6 · MOTEUR D'ALERTES & AUDIO</p>
+            <h2>Post-traitement en trois étapes, quatre niveaux de sévérité</h2>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14, marginTop: 14 }}>
               <div className="pres-card" style={{ padding: "14px 16px" }}>
-                <span className="tag tag-blue">Stage 1</span>
-                <h3 style={{ fontSize: 14, margin: "8px 0 4px" }}>Compliance hysteresis</h3>
-                <p style={{ fontSize: 12, color: "#666", margin: "0 0 6px" }}>Asymmetric counters per class:</p>
+                <span className="tag tag-blue">Étape 1</span>
+                <h3 style={{ fontSize: 14, margin: "8px 0 4px" }}>Hystérésis de conformité</h3>
+                <p style={{ fontSize: 12, color: "#666", margin: "0 0 6px" }}>Compteurs asymétriques par classe :</p>
                 <ul style={{ paddingLeft: 16, fontSize: 12, color: "#666", lineHeight: 1.7, margin: 0 }}>
-                  <li>seatbelt: <strong>24</strong> ON / <strong>27</strong> OFF</li>
-                  <li>smoking: <strong>8</strong> ON / <strong>20</strong> OFF</li>
-                  <li>phone: <strong>8</strong> ON / <strong>20</strong> OFF</li>
+                  <li>ceinture : <strong>24</strong> ON / <strong>27</strong> OFF</li>
+                  <li>tabagisme : <strong>8</strong> ON / <strong>20</strong> OFF</li>
+                  <li>téléphone : <strong>8</strong> ON / <strong>20</strong> OFF</li>
                 </ul>
               </div>
               <div className="pres-card" style={{ padding: "14px 16px" }}>
-                <span className="tag tag-orange">Stage 2</span>
-                <h3 style={{ fontSize: 14, margin: "8px 0 4px" }}>Fatigue band</h3>
+                <span className="tag tag-orange">Étape 2</span>
+                <h3 style={{ fontSize: 14, margin: "8px 0 4px" }}>Bande de fatigue</h3>
                 <p style={{ fontSize: 12, color: "#666", margin: 0 }}>
-                  Single 0..1 score → calm / mild / moderate / severe.
-                  <br />Sub-alerts suppressed when band drives.
+                  Un seul score 0..1 → calme / léger / modéré / sévère.
+                  <br />Sous-alertes supprimées quand la bande prend le relais.
                 </p>
               </div>
               <div className="pres-card" style={{ padding: "14px 16px" }}>
-                <span className="tag tag-red">Stage 3</span>
-                <h3 style={{ fontSize: 14, margin: "8px 0 4px" }}>Audio dispatch</h3>
+                <span className="tag tag-red">Étape 3</span>
+                <h3 style={{ fontSize: 14, margin: "8px 0 4px" }}>Distribution audio</h3>
                 <p style={{ fontSize: 12, color: "#666", margin: 0 }}>
-                  Daemon thread + queue · WinMM MCI / aplay / afplay.
-                  <br />Pure stdlib — no new pip deps.
+                  Thread démon + file · WinMM MCI / aplay / afplay.
+                  <br />Stdlib pur — aucune nouvelle dépendance pip.
                 </p>
               </div>
             </div>
@@ -975,18 +975,18 @@ result_dict["alerts"]        = [...]  # ranked, deduped`}</CodeBlock>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                 <thead>
                   <tr style={{ background: "hsl(var(--surface))" }}>
-                    <th style={{ textAlign: "left", padding: "10px 14px" }}>Tier</th>
-                    <th style={{ textAlign: "left", padding: "10px 14px" }}>Cooldown</th>
-                    <th style={{ textAlign: "left", padding: "10px 14px" }}>Sound</th>
-                    <th style={{ textAlign: "left", padding: "10px 14px" }}>Triggers</th>
+                    <th style={{ textAlign: "left", padding: "10px 14px" }}>Niveau</th>
+                    <th style={{ textAlign: "left", padding: "10px 14px" }}>Délai d'attente</th>
+                    <th style={{ textAlign: "left", padding: "10px 14px" }}>Son</th>
+                    <th style={{ textAlign: "left", padding: "10px 14px" }}>Déclencheurs</th>
                   </tr>
                 </thead>
                 <tbody>
                   {[
-                    ["info", "15 s", "Single soft 880 Hz tone", "Gaze alert · low-severity compliance"],
-                    ["warn", "25 s", "Double 660 Hz tone", "Yawn frequency · moderate fatigue band · phone/smoking confirmed"],
-                    ["critical", "30 s", "1200 → 500 Hz sweep", "Seatbelt OFF confirmed · two compliance alerts at once"],
-                    ["severe", "45 s", "Custom MP3 (Hey_you_WAKE_UP!.mp3)", "Severe fatigue band · cross-module fatigue escalation"],
+                    ["info", "15 s", "Tonalité unique douce 880 Hz", "Alerte regard · conformité à faible sévérité"],
+                    ["warn", "25 s", "Double tonalité 660 Hz", "Fréquence des bâillements · bande de fatigue modérée · téléphone/tabagisme confirmé"],
+                    ["critical", "30 s", "Balayage 1200 → 500 Hz", "Ceinture OFF confirmée · deux alertes de conformité simultanées"],
+                    ["severe", "45 s", "MP3 personnalisé (Hey_you_WAKE_UP!.mp3)", "Bande de fatigue sévère · escalade fatigue inter-modules"],
                   ].map((row, i) => (
                     <tr key={i} style={{ borderTop: "1px solid hsl(var(--border))" }}>
                       <td style={{ padding: "10px 14px" }}>
@@ -1001,18 +1001,18 @@ result_dict["alerts"]        = [...]  # ranked, deduped`}</CodeBlock>
               </table>
             </div>
             <div style={{ marginTop: 12, background: "#fff5f5", border: "1px solid #ffd6d6", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#8b1e1e" }}>
-              <strong>Cross-module escalation.</strong> When two or more fatigue indicators fire simultaneously, the engine promotes them to a single <em>CRITICAL FATIGUE</em> severe-tier alert — one loud event, not three competing chimes.
+              <strong>Escalade inter-modules.</strong> Lorsque deux indicateurs de fatigue ou plus se déclenchent simultanément, le moteur les promeut en une seule alerte de niveau sévère <em>FATIGUE CRITIQUE</em> — un seul événement sonore, pas trois carillons concurrents.
             </div>
           </div>
         </section>
 
-        {/* ===== 14 — Config discipline ===== */}
+        {/* ===== 17 — Discipline de config ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">CONFIGURATION DISCIPLINE</p>
-            <h2>Every threshold is a YAML key</h2>
+            <p className="section-label">DISCIPLINE DE CONFIGURATION</p>
+            <h2>Chaque seuil est une clé YAML</h2>
             <p style={{ fontSize: 13, color: "#666", marginTop: 4 }}>
-              Re-tuning for a new driver pool, a new vehicle, or a new region is a one-file change. Re-tuning for a new licensee is a fork of <code>configs/</code>, not the code.
+              Reparamétrer pour un nouveau pool de conducteurs, un nouveau véhicule ou une nouvelle région est un changement d'un fichier. Reparamétrer pour un nouveau licencié est un fork de <code>configs/</code>, pas du code.
             </p>
             <div className="two-col" style={{ display: "flex", gap: 18, marginTop: 14 }}>
               <div style={{ flex: 1 }}>
@@ -1068,74 +1068,74 @@ smoking_onnx:   weights/smoking_yolov8.onnx`}</CodeBlock>
               </div>
             </div>
             <div style={{ marginTop: 12, background: "hsl(var(--surface))", borderLeft: "3px solid hsl(var(--primary))", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#555" }}>
-              Landmark indices live in <code>src/face_mesh/landmark_utils.py</code> — never inlined in detector code.
+              Les indices de landmarks vivent dans <code>src/face_mesh/landmark_utils.py</code> — jamais inlinés dans le code des détecteurs.
             </div>
           </div>
         </section>
 
-        {/* ===== 15 — Runtime / demo ===== */}
+        {/* ===== 18 — Exécution & démo ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">RUNTIME · DEMO MODES</p>
-            <h2>Single entry point, every module togglable</h2>
+            <p className="section-label">EXÉCUTION · MODES DÉMO</p>
+            <h2>Point d'entrée unique, chaque module activable/désactivable</h2>
             <div className="two-col" style={{ display: "flex", gap: 24, marginTop: 14, alignItems: "flex-start" }}>
               <div style={{ flex: 1 }}>
                 <CodeBlock>{`python scripts/run_demo.py
-    # webcam, all modules on (default)
+    # webcam, tous modules activés (défaut)
 
 python scripts/run_demo.py --source video.mp4
-    # video file, real-time-paced playback
+    # fichier vidéo, lecture calée sur le temps réel
 
 python scripts/run_demo.py --no-smoking
 python scripts/run_demo.py --no-phone
 python scripts/run_demo.py --no-compliance
-    # toggle individual modules
+    # activer/désactiver les modules individuellement
 
 python scripts/run_demo.py --seatbelt-pipeline 3
-    # ablation: simpler pipeline
+    # ablation : pipeline simplifié
 
 python scripts/run_demo.py --output annotated.mp4
-    # save overlay-rendered video`}</CodeBlock>
+    # sauvegarder la vidéo avec overlay rendu`}</CodeBlock>
                 <div style={{ marginTop: 10, background: "hsl(var(--surface))", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#555", borderLeft: "3px solid hsl(var(--primary))" }}>
-                  <strong>Frame-skipping for video files.</strong> The runtime tracks wall-clock vs source FPS — if inference is slower than the source, frames are dropped to keep playback real-time. Critical for evaluation on benchmark videos.
+                  <strong>Frame-skipping pour les fichiers vidéo.</strong> L'exécution suit l'horloge murale vs FPS source — si l'inférence est plus lente que la source, des images sont écartées pour garder une lecture temps réel. Critique pour l'évaluation sur vidéos de référence.
                 </div>
                 <div style={{ marginTop: 10, background: "hsl(var(--surface))", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#555", borderLeft: "3px solid #2e7d32" }}>
-                  <strong>Graceful shutdown.</strong> <code>try / KeyboardInterrupt / finally</code> wraps the main loop — Ctrl+C exits cleanly, releases the camera, joins the daemon threads, flushes the video writer.
+                  <strong>Arrêt propre.</strong> <code>try / KeyboardInterrupt / finally</code> enveloppe la boucle principale — Ctrl+C quitte proprement, libère la caméra, joint les threads démons, vide le writer vidéo.
                 </div>
               </div>
               <div style={{ flex: 1 }}>
-                <h3 style={{ fontSize: 16 }}>Live overlay</h3>
+                <h3 style={{ fontSize: 16 }}>Overlay temps réel</h3>
                 <ul style={{ margin: "0 0 0 16px", padding: 0, fontSize: 12, color: "#555", lineHeight: 1.8 }}>
-                  <li>FPS counter — green ≥ 15, red &lt; 15</li>
-                  <li>EAR + calibration baseline (e.g. <code>EAR 0.31 / BL 0.34</code>)</li>
-                  <li>MAR + threshold</li>
-                  <li>PERCLOS percent + severity label (OK / MILD / MOD / HIGH)</li>
-                  <li>Yawn count</li>
-                  <li><strong>Fatigue score bar (0..1) with band color</strong></li>
-                  <li>Gaze direction + signal source <code>[H]/[I]/[?]</code></li>
-                  <li>Head pitch / yaw + pose method</li>
-                  <li>Compliance status (seatbelt ON/OFF, smoking, phone)</li>
-                  <li>Active alerts ranked by severity</li>
-                  <li>Critical / severe alerts trigger a red top banner</li>
+                  <li>Compteur FPS — vert ≥ 15, rouge &lt; 15</li>
+                  <li>EAR + baseline de calibration (ex. <code>EAR 0,31 / BL 0,34</code>)</li>
+                  <li>MAR + seuil</li>
+                  <li>Pourcentage PERCLOS + label de sévérité (OK / MILD / MOD / HIGH)</li>
+                  <li>Nombre de bâillements</li>
+                  <li><strong>Barre de score de fatigue (0..1) avec couleur de bande</strong></li>
+                  <li>Direction du regard + source du signal <code>[H]/[I]/[?]</code></li>
+                  <li>Pitch / yaw de la tête + méthode de pose</li>
+                  <li>État de conformité (ceinture ON/OFF, tabagisme, téléphone)</li>
+                  <li>Alertes actives classées par sévérité</li>
+                  <li>Les alertes critique / sévère déclenchent une bannière rouge en haut</li>
                 </ul>
                 <button
                   onClick={() => openDemo("fatigue")}
                   style={{ marginTop: 14, border: "1px solid hsl(var(--border))", background: "#fff", borderRadius: 10, padding: "10px 18px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
                 >
-                  ▶ Play fatigue overlay demo
+                  ▶ Lancer la démo overlay fatigue
                 </button>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ===== 16 — Performance ===== */}
+        {/* ===== 19 — Performance ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">PERFORMANCE · EVALUATION</p>
-            <h2>Per-component latency with <code>scripts/evaluate.py</code></h2>
+            <p className="section-label">PERFORMANCE · ÉVALUATION</p>
+            <h2>Latence par composant avec <code>scripts/evaluate.py</code></h2>
             <p style={{ fontSize: 13, color: "#666", marginTop: 4 }}>
-              <code>Stopwatch</code> samples per component · 30-frame warmup discarded · mean / p50 / p95 / p99 / max in milliseconds.
+              Mesures <code>Stopwatch</code> par composant · préchauffe de 30 images écartée · moyenne / p50 / p95 / p99 / max en millisecondes.
             </p>
             <div className="two-col" style={{ display: "flex", gap: 24, marginTop: 12, alignItems: "flex-start" }}>
               <div style={{ flex: 1.1 }}>
@@ -1143,24 +1143,24 @@ python scripts/run_demo.py --output annotated.mp4
                   <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                     <thead>
                       <tr style={{ background: "hsl(var(--surface))" }}>
-                        <th style={{ textAlign: "left", padding: "8px 12px" }}>Component</th>
-                        <th style={{ textAlign: "right", padding: "8px 12px" }}>mean</th>
+                        <th style={{ textAlign: "left", padding: "8px 12px" }}>Composant</th>
+                        <th style={{ textAlign: "right", padding: "8px 12px" }}>moyenne</th>
                         <th style={{ textAlign: "right", padding: "8px 12px" }}>p95</th>
                         <th style={{ textAlign: "left", padding: "8px 12px" }}>Thread</th>
                       </tr>
                     </thead>
                     <tbody>
                       {[
-                        ["Face mesh (MediaPipe)", "62 ms", "78 ms", "main"],
-                        ["Head pose (solvePnP)", "0.8 ms", "1.2 ms", "main"],
-                        ["EAR", "0.3 ms", "0.5 ms", "main"],
-                        ["MAR", "0.2 ms", "0.3 ms", "main"],
-                        ["PERCLOS", "0.4 ms", "0.6 ms", "main"],
-                        ["Gaze", "0.9 ms", "1.4 ms", "main"],
-                        ["Fatigue scorer", "0.2 ms", "0.3 ms", "main"],
-                        ["Seatbelt (pipeline 2)", "48 ms", "62 ms", "async"],
-                        ["Smoking (hybrid)", "31 ms", "44 ms", "async"],
-                        ["Phone YOLO", "29 ms", "41 ms", "async"],
+                        ["Face mesh (MediaPipe)", "62 ms", "78 ms", "principal"],
+                        ["Pose de tête (solvePnP)", "0,8 ms", "1,2 ms", "principal"],
+                        ["EAR", "0,3 ms", "0,5 ms", "principal"],
+                        ["MAR", "0,2 ms", "0,3 ms", "principal"],
+                        ["PERCLOS", "0,4 ms", "0,6 ms", "principal"],
+                        ["Regard", "0,9 ms", "1,4 ms", "principal"],
+                        ["Score de fatigue", "0,2 ms", "0,3 ms", "principal"],
+                        ["Ceinture (pipeline 2)", "48 ms", "62 ms", "async"],
+                        ["Tabagisme (hybride)", "31 ms", "44 ms", "async"],
+                        ["YOLO téléphone", "29 ms", "41 ms", "async"],
                       ].map((row, i) => (
                         <tr key={i} style={{ borderTop: "1px solid hsl(var(--border))" }}>
                           <td style={{ padding: "8px 12px", fontFamily: "'Courier New', monospace", fontSize: 11 }}>{row[0]}</td>
@@ -1173,27 +1173,27 @@ python scripts/run_demo.py --output annotated.mp4
                   </table>
                 </div>
                 <p style={{ fontSize: 11, color: "#999", marginTop: 8, fontStyle: "italic" }}>
-                  Measured on i5 10th-gen, 16 GB RAM, no GPU. Total main-thread budget: <strong>~70–110 ms / frame → 10–15 FPS sustained</strong>.
-                  Compliance modules run in <code>ComplianceWorker</code> daemon thread and do not block.
+                  Mesuré sur i5 10ᵉ génération, 16 Go de RAM, sans GPU. Budget total du thread principal : <strong>~70–110 ms / image → 10–15 FPS soutenu</strong>.
+                  Les modules de conformité tournent dans le thread démon <code>ComplianceWorker</code> et ne bloquent pas.
                 </p>
               </div>
               <div style={{ flex: 0.9, display: "flex", flexDirection: "column", gap: 12 }}>
                 <div className="pres-card" style={{ padding: "12px 14px", background: "#f0fdf4", borderColor: "#86efac" }}>
-                  <strong style={{ fontSize: 13, color: "#15803d" }}>What works on the laptop</strong>
+                  <strong style={{ fontSize: 13, color: "#15803d" }}>Ce qui fonctionne sur le portable</strong>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "#365314" }}>
-                    Full pipeline (all 5 detectors + fatigue scorer + audio dispatch) sustains 10–15 FPS. Demo runs end-to-end without manual intervention.
+                    Pipeline complet (les 5 détecteurs + score de fatigue + distribution audio) tient 10–15 FPS. La démo tourne de bout en bout sans intervention manuelle.
                   </p>
                 </div>
                 <div className="pres-card" style={{ padding: "12px 14px", background: "#fff7ed", borderColor: "#ffd6a8" }}>
-                  <strong style={{ fontSize: 13, color: "#b45309" }}>Open item — RPi 4 benchmark</strong>
+                  <strong style={{ fontSize: 13, color: "#b45309" }}>Point ouvert — benchmark RPi 4</strong>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "#7c3a05" }}>
-                    Hardware loan from Qareeb pending. Plan: run <code>evaluate.py</code> on a captured 5-minute driving video, confirm ≥ 15 FPS at p95.
+                    Prêt de matériel par Qareeb en attente. Plan : exécuter <code>evaluate.py</code> sur une vidéo de conduite capturée de 5 minutes, confirmer ≥ 15 FPS en p95.
                   </p>
                 </div>
                 <div className="pres-card" style={{ padding: "12px 14px" }}>
-                  <strong style={{ fontSize: 13 }}>Where the budget goes</strong>
+                  <strong style={{ fontSize: 13 }}>Où passe le budget</strong>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
-                    MediaPipe face mesh dominates the main thread (~60% of budget). YOLO at any branch (30–60 ms) runs async — it would otherwise alone blow the 67 ms target.
+                    Le face mesh MediaPipe domine le thread principal (~60 % du budget). YOLO sur n'importe quelle branche (30–60 ms) tourne en async — sinon il ferait à lui seul exploser la cible de 67 ms.
                   </p>
                 </div>
               </div>
@@ -1201,33 +1201,33 @@ python scripts/run_demo.py --output annotated.mp4
           </div>
         </section>
 
-        {/* ===== 17 — Technical decisions ===== */}
+        {/* ===== 20 — Décisions techniques ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">TECHNICAL DECISIONS</p>
-            <h2>Why each choice — and what it cost</h2>
+            <p className="section-label">DÉCISIONS TECHNIQUES</p>
+            <h2>Pourquoi chaque choix — et ce qu'il a coûté</h2>
             <div style={{ overflow: "auto", borderRadius: 12, border: "1px solid hsl(var(--border))", marginTop: 12 }}>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                 <thead>
                   <tr style={{ background: "hsl(var(--surface))" }}>
-                    <th style={{ textAlign: "left", padding: "10px 14px", width: "30%" }}>Decision</th>
-                    <th style={{ textAlign: "left", padding: "10px 14px" }}>Reason</th>
+                    <th style={{ textAlign: "left", padding: "10px 14px", width: "30%" }}>Décision</th>
+                    <th style={{ textAlign: "left", padding: "10px 14px" }}>Raison</th>
                   </tr>
                 </thead>
                 <tbody>
                   {[
-                    ["MediaPipe Tasks API (not legacy)", "Offline .task file; free 4×4 transformation matrix; Apache 2.0."],
-                    ["YOLOv8 / YOLOv10 (not YOLOv5)", "AGPL-3.0 is a commercial blocker for Qareeb. v8/v10 ship under Apache 2.0."],
-                    ["Smoking: YOLO ⊕ landmark fusion (0.10/0.90)", "YOLO sees the object, landmarks see the gesture. Either alone is fragile in this dataset."],
-                    ["Phone: YOLO only", "Hand-near-ear is unreliable from a driver-facing camera angle — the ear is often pillar-occluded."],
-                    ["Per-driver EAR calibration (10 s warmup)", "Universal thresholds fail; eye-aperture varies ~30%. Operationally OK to delay."],
-                    ["Threading, not multiprocessing", "RPi 4 RAM is constrained; the GIL is irrelevant for I/O-bound inference."],
-                    ["Deviation-from-neutral gaze", "Absolute iris ratios bias by anatomy. Δ from a per-driver neutral is robust."],
-                    ["ComplianceWorker daemon thread", "YOLO 30–50 ms would blow the 67 ms main-thread budget. Async + lock-guarded merge."],
-                    ["FatigueScorer single 0..1", "Independent alerts spam the driver. Humans care about overall state, not which sub-signal fired."],
-                    ["WinMM MCI / aplay / afplay for audio", "Pure stdlib — no new pip deps; one less failure mode in deployment."],
-                    ["Asymmetric seatbelt hysteresis (24/27)", "Flicker is real, strap loss isn't. Slow to commit OFF, fast to confirm ON."],
-                    ["Result_dict shared mutable contract", "Replaces 20 dataclasses with 200 lines of plumbing. Faster on RPi, easier to reason about."],
+                    ["MediaPipe Tasks API (pas l'ancienne version)", "Fichier .task hors ligne ; matrice de transformation 4×4 gratuite ; Apache 2.0."],
+                    ["YOLOv8 / YOLOv10 (pas YOLOv5)", "L'AGPL-3.0 est un bloquant commercial pour Qareeb. v8/v10 sont sous Apache 2.0."],
+                    ["Tabagisme : fusion YOLO ⊕ landmarks (0,10/0,90)", "YOLO voit l'objet, les landmarks voient le geste. L'un ou l'autre seul est fragile sur ce dataset."],
+                    ["Téléphone : YOLO seul", "La main proche de l'oreille est peu fiable depuis une caméra orientée conducteur — l'oreille est souvent occultée par le montant."],
+                    ["Calibration EAR par conducteur (préchauffe 10 s)", "Les seuils universels échouent ; l'ouverture oculaire varie d'environ 30 %. Acceptable opérationnellement de décaler."],
+                    ["Threading, pas multiprocessing", "La RAM du RPi 4 est limitée ; le GIL est sans importance pour l'inférence I/O-bound."],
+                    ["Déviation par rapport au regard neutre", "Les ratios d'iris absolus sont biaisés par l'anatomie. Le Δ par rapport à un neutre par conducteur est robuste."],
+                    ["Thread démon ComplianceWorker", "YOLO 30–50 ms ferait exploser le budget de 67 ms du thread principal. Async + fusion protégée par verrou."],
+                    ["FatigueScorer unique 0..1", "Les alertes indépendantes spamment le conducteur. L'humain s'intéresse à l'état global, pas au sous-signal déclenché."],
+                    ["WinMM MCI / aplay / afplay pour l'audio", "Stdlib pur — aucune nouvelle dépendance pip ; un mode de défaillance en moins en déploiement."],
+                    ["Hystérésis asymétrique de la ceinture (24/27)", "Le scintillement est réel, la perte de sangle ne l'est pas. Lent à valider OFF, rapide à confirmer ON."],
+                    ["Contrat mutable partagé result_dict", "Remplace 20 dataclasses et 200 lignes de plomberie. Plus rapide sur RPi, plus simple à raisonner."],
                   ].map((row, i) => (
                     <tr key={i} style={{ borderTop: "1px solid hsl(var(--border))" }}>
                       <td style={{ padding: "10px 14px", fontWeight: 600, color: "#222" }}>{row[0]}</td>
@@ -1240,19 +1240,19 @@ python scripts/run_demo.py --output annotated.mp4
           </div>
         </section>
 
-        {/* ===== 20 — Scope & roadmap ===== */}
+        {/* ===== 21 — Périmètre & feuille de route ===== */}
         <section className="slide">
           <div className="slide-inner">
-            <p className="section-label">SCOPE · OPEN ITEMS</p>
-            <h2>What's not in MVP, and why that's deliberate</h2>
+            <p className="section-label">PÉRIMÈTRE · POINTS OUVERTS</p>
+            <h2>Ce qui n'est pas dans le MVP, et pourquoi c'est délibéré</h2>
             <div className="two-col" style={{ display: "flex", gap: 24, marginTop: 14, alignItems: "flex-start" }}>
               <div style={{ flex: 1 }}>
-                <h3 style={{ fontSize: 15, color: "#7c3a05" }}>Deliberate scope cuts</h3>
+                <h3 style={{ fontSize: 15, color: "#7c3a05" }}>Coupes de périmètre délibérées</h3>
                 {[
-                  ["Module 4 — CNN-GRU on the main thread", "Implemented and competitive on F1, but does not currently fit the 15 FPS budget on Raspberry Pi 4. Distillation + frame-skip is the resolution path."],
-                  ["BiLSTM seatbelt smoother", "Trained as an alternative to the EMA. Did not improve precision/recall on our clips, and added latency. Dropped — EMA + RANSAC kept."],
-                  ["IR camera support", "Ordered, not yet arrived. Visible-light only for the MVP — limits night and sunglasses use cases."],
-                  ["Driver-history adaptation", "Per-driver baselines reset each session. Cross-session learning is out of scope; no persistent driver-ID layer."],
+                  ["Module 4 — CNN-GRU sur le thread principal", "Implémenté et compétitif sur le F1, mais ne rentre pas encore dans le budget 15 FPS sur Raspberry Pi 4. La distillation + frame-skip est le chemin de résolution."],
+                  ["Lisseur BiLSTM ceinture", "Entraîné comme alternative à l'EMA. N'a pas amélioré la précision/rappel sur nos clips, et a ajouté de la latence. Abandonné — EMA + RANSAC conservés."],
+                  ["Support caméra IR", "Commandée, pas encore arrivée. Lumière visible uniquement pour le MVP — limite les cas d'usage nuit et lunettes de soleil."],
+                  ["Adaptation à l'historique conducteur", "Les baselines par conducteur se réinitialisent à chaque session. L'apprentissage inter-sessions est hors périmètre ; pas de couche d'identification persistante du conducteur."],
                 ].map(([t, d]) => (
                   <div key={t} className="pres-card" style={{ padding: "10px 14px", marginBottom: 8, background: "#fff7ed", borderColor: "#ffd6a8" }}>
                     <strong style={{ fontSize: 12, color: "#7c3a05" }}>{t}</strong>
@@ -1261,14 +1261,14 @@ python scripts/run_demo.py --output annotated.mp4
                 ))}
               </div>
               <div style={{ flex: 1 }}>
-                <h3 style={{ fontSize: 15, color: "#15803d" }}>Open items</h3>
+                <h3 style={{ fontSize: 15, color: "#15803d" }}>Points ouverts</h3>
                 {[
-                  "Run evaluate.py on Raspberry Pi 4 to confirm 15 FPS on real driving footage",
-                  "Quantitative accuracy on labelled video (seatbelt · phone · smoking)",
-                  "Soft |roll| > 25° validity gate (MediaPipe degrades there)",
-                  "Camera-mount offset auto-calibration script (30 s forward gaze at session start)",
-                  "Distill / frame-skip the CNN-GRU head so it fits the RPi 4 budget",
-                  "IR camera support once hardware arrives — night / sunglasses use case",
+                  "Exécuter evaluate.py sur Raspberry Pi 4 pour confirmer 15 FPS sur des séquences de conduite réelles",
+                  "Précision quantitative sur vidéo annotée (ceinture · téléphone · tabagisme)",
+                  "Filtre de validité souple |roll| > 25° (MediaPipe se dégrade à cet angle)",
+                  "Script d'auto-calibration du décalage de montage caméra (30 s de regard droit devant en début de session)",
+                  "Distiller / frame-skipper la tête CNN-GRU pour qu'elle rentre dans le budget RPi 4",
+                  "Support caméra IR dès réception du matériel — cas d'usage nuit / lunettes de soleil",
                 ].map((t, i) => (
                   <div key={i} className="pres-card" style={{ padding: "10px 14px", marginBottom: 6, background: "#f0fdf4", borderColor: "#86efac" }}>
                     <p style={{ margin: 0, fontSize: 12, color: "#365314" }}>
@@ -1279,26 +1279,26 @@ python scripts/run_demo.py --output annotated.mp4
               </div>
             </div>
             <div style={{ marginTop: 14, background: "hsl(var(--surface))", borderLeft: "3px solid hsl(var(--primary))", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#555" }}>
-              <strong>MVP delivery.</strong> May 2026. Every cut above has a clear, bounded reason — none of them are unknowns.
+              <strong>Livraison MVP.</strong> Mai 2026. Chaque coupe ci-dessus a une raison claire et délimitée — aucune n'est inconnue.
             </div>
           </div>
         </section>
 
-        {/* ===== 19 — Closing ===== */}
+        {/* ===== 22 — Conclusion ===== */}
         <section className="slide">
           <div className="slide-bg-accent" style={{ top: -100, left: -100 }} />
           <div className="slide-bg-accent" style={{ bottom: -150, right: -150 }} />
           <div className="slide-inner" style={{ textAlign: "center" }}>
-            <p className="section-label" style={{ justifyContent: "center" }}>SUMMARY</p>
-            <h1 style={{ fontSize: "clamp(32px, 4vw, 52px)", marginBottom: 18 }}>One camera · five detectors<br />one fatigue score · one voice</h1>
+            <p className="section-label" style={{ justifyContent: "center" }}>RÉSUMÉ</p>
+            <h1 style={{ fontSize: "clamp(32px, 4vw, 52px)", marginBottom: 18 }}>Une caméra · cinq détecteurs<br />un score de fatigue · une voix</h1>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, maxWidth: 900, margin: "0 auto" }}>
               {[
-                { stat: "15 FPS", label: "Target end-to-end on Raspberry Pi 4" },
-                { stat: "5 modules", label: "Fatigue · Gaze · Seatbelt · Phone · Smoking" },
-                { stat: "Apache 2.0", label: "License-clean for commercial deployment" },
-                { stat: "0 cloud calls", label: "Fully offline by construction" },
-                { stat: "10 s", label: "Per-driver EAR calibration at session start" },
-                { stat: "1 voice", label: "FatigueScorer + AlertEngine speak as one" },
+                { stat: "15 FPS", label: "Cible bout en bout sur Raspberry Pi 4" },
+                { stat: "5 modules", label: "Fatigue · Regard · Ceinture · Téléphone · Tabagisme" },
+                { stat: "Apache 2.0", label: "Licence propre pour déploiement commercial" },
+                { stat: "0 appel cloud", label: "Entièrement hors ligne par construction" },
+                { stat: "10 s", label: "Calibration EAR par conducteur en début de session" },
+                { stat: "1 voix", label: "FatigueScorer + AlertEngine parlent d'une seule voix" },
               ].map((c) => (
                 <div key={c.stat} className="pres-card" style={{ padding: "16px 14px" }}>
                   <div style={{ fontSize: 26, fontWeight: 200, color: "hsl(var(--primary))", letterSpacing: "-0.02em" }}>{c.stat}</div>
@@ -1307,8 +1307,8 @@ python scripts/run_demo.py --output annotated.mp4
               ))}
             </div>
             <div style={{ marginTop: 32 }}>
-              <p style={{ fontWeight: 500, fontSize: 22, letterSpacing: "-0.01em", margin: 0 }}>Thank you — questions welcome</p>
-              <p style={{ fontSize: 13, color: "#999", marginTop: 6 }}>Live demo on the laptop · video clips one click away in the deck</p>
+              <p style={{ fontWeight: 500, fontSize: 22, letterSpacing: "-0.01em", margin: 0 }}>Merci — questions bienvenues</p>
+              <p style={{ fontSize: 13, color: "#999", marginTop: 6 }}>Démo en direct sur le portable · clips vidéo à un clic dans la présentation</p>
             </div>
             <div className="dark-strip">
               <div style={{ maxWidth: 1100, margin: "0 auto", textAlign: "center" }}>
@@ -1317,7 +1317,7 @@ python scripts/run_demo.py --output annotated.mp4
                   <img src="/qareeb_logo.ico" alt="Qareeb" style={{ height: 28, objectFit: "contain" }} />
                 </div>
                 <p style={{ fontSize: 12, color: "#888", margin: 0 }}>
-                  Berbaoui Ashref · Benelhadj Djelloul Imen · Gasmi Yassine · Khentache Hamza &nbsp; — &nbsp; Supervisor: Mounir Ouadi
+                  Berbaoui Ashref · Benelhadj Djelloul Imen · Gasmi Yassine · Khentache Hamza &nbsp; — &nbsp; Encadrant : Mounir Ouadi
                 </p>
               </div>
             </div>
@@ -1336,16 +1336,16 @@ python scripts/run_demo.py --output annotated.mp4
             style={{ width: "min(900px, 100%)", background: "#111", borderRadius: 14, border: "1px solid rgba(255,255,255,0.15)", overflow: "hidden", boxShadow: "0 20px 40px rgba(0,0,0,0.5)" }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", borderBottom: "1px solid rgba(255,255,255,0.12)", color: "#fff" }}>
-              <strong style={{ fontSize: 14 }}>{activeDemo.title} (first 7 seconds)</strong>
+              <strong style={{ fontSize: 14 }}>{activeDemo.title} (7 premières secondes)</strong>
               <div style={{ display: "flex", gap: 8 }}>
-                <a href={activeDemo.src} target="_blank" rel="noreferrer" style={{ textDecoration: "none", background: "transparent", border: "1px solid rgba(255,255,255,0.35)", color: "#fff", borderRadius: 8, padding: "4px 10px", fontSize: 14 }}>Open file</a>
-                <button onClick={closeDemo} style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.35)", color: "#fff", borderRadius: 8, padding: "4px 10px", cursor: "pointer" }}>Close</button>
+                <a href={activeDemo.src} target="_blank" rel="noreferrer" style={{ textDecoration: "none", background: "transparent", border: "1px solid rgba(255,255,255,0.35)", color: "#fff", borderRadius: 8, padding: "4px 10px", fontSize: 14 }}>Ouvrir le fichier</a>
+                <button onClick={closeDemo} style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.35)", color: "#fff", borderRadius: 8, padding: "4px 10px", cursor: "pointer" }}>Fermer</button>
               </div>
             </div>
             {demoVideoState === "error" && (
               <div style={{ padding: "12px 16px", background: "#2a1f1f", borderBottom: "1px solid rgba(255,255,255,0.12)" }}>
                 <p style={{ margin: 0, color: "#ffd7d7", fontSize: 13, lineHeight: 1.5 }}>{demoVideoReason}</p>
-                <p style={{ margin: "6px 0 0", color: "#ffb3b3", fontSize: 12 }}>Recommended fix: re-export this demo as MP4 H.264 (avc1) or verify the file path in public/.</p>
+                <p style={{ margin: "6px 0 0", color: "#ffb3b3", fontSize: 12 }}>Correctif recommandé : réexporter cette démo en MP4 H.264 (avc1) ou vérifier le chemin du fichier dans public/.</p>
               </div>
             )}
             <video
@@ -1366,7 +1366,7 @@ python scripts/run_demo.py --output annotated.mp4
   );
 }
 
-/* ===================== Sub-components ===================== */
+/* ===================== Sous-composants ===================== */
 
 function CodeBlock({ children }: { children: string }) {
   return (
@@ -1408,7 +1408,7 @@ function PerclosBar() {
         ))}
       </div>
       <p style={{ fontSize: 11, color: "#999", margin: "6px 0 0" }}>
-        60-second window · 10 closed / 60 ≈ <strong>17%</strong> → fires alert (threshold 15%)
+        Fenêtre de 60 secondes · 10 fermés / 60 ≈ <strong>17 %</strong> → déclenche l'alerte (seuil 15 %)
       </p>
     </div>
   );
@@ -1416,10 +1416,10 @@ function PerclosBar() {
 
 function FatigueScoreBar() {
   const bands = [
-    { from: 0, to: 0.30, color: "#86efac", label: "calm", action: "silent" },
-    { from: 0.30, to: 0.55, color: "#fde68a", label: "mild", action: "visual only" },
-    { from: 0.55, to: 0.78, color: "#fdba74", label: "moderate", action: "warn chime" },
-    { from: 0.78, to: 1.00, color: "#fca5a5", label: "severe", action: "MP3" },
+    { from: 0, to: 0.30, color: "#86efac", label: "calme", action: "silencieux" },
+    { from: 0.30, to: 0.55, color: "#fde68a", label: "léger", action: "visuel seul" },
+    { from: 0.55, to: 0.78, color: "#fdba74", label: "modéré", action: "carillon" },
+    { from: 0.78, to: 1.00, color: "#fca5a5", label: "sévère", action: "MP3" },
   ];
   return (
     <div style={{ marginTop: 8 }}>
@@ -1463,7 +1463,7 @@ function FatigueScoreBar() {
 
 function RpiBoardVisual() {
   return (
-    <svg width="100%" viewBox="0 0 320 170" role="img" aria-label="Stylized Raspberry Pi 4 board">
+    <svg width="100%" viewBox="0 0 320 170" role="img" aria-label="Carte Raspberry Pi 4 stylisée">
       <rect x="8" y="8" width="304" height="154" rx="14" fill="#2f8f46" stroke="#1f5f2d" strokeWidth="3" />
       <rect x="22" y="28" width="74" height="52" rx="6" fill="#222" />
       <rect x="105" y="22" width="96" height="64" rx="8" fill="#3b3b3b" />
@@ -1503,52 +1503,44 @@ function ArchitectureDiagram() {
           </marker>
         </defs>
 
-        {/* Camera */}
-        {box(420, 10, 160, 44, "Camera", "640×480 @ 15 FPS RGB", "#fff7ed", "#fdba74")}
+        {box(420, 10, 160, 44, "Caméra", "640×480 @ 15 FPS RGB", "#fff7ed", "#fdba74")}
         {arrow(500, 54, 500, 80)}
 
-        {/* Module 1: Face Mesh */}
-        {box(290, 80, 420, 64, "Module 1 · FaceMeshDetector", "MediaPipe Tasks · 478 landmarks · 4×4 transform · solvePnP · EMA(α=0.4)", "#e8f4fd", "#90caf9")}
+        {box(290, 80, 420, 64, "Module 1 · FaceMeshDetector", "MediaPipe Tasks · 478 landmarks · transform 4×4 · solvePnP · EMA(α=0.4)", "#e8f4fd", "#90caf9")}
 
-        {/* result_dict bus */}
         <rect x={50} y={170} width={900} height={32} rx={6} fill="#1a1a1a" />
         <text x={500} y={191} textAnchor="middle" fontSize="12" fontWeight="700" fill="#fff" fontFamily="'JetBrains Mono', monospace">
-          shared result_dict — read · mutate · return
+          result_dict partagé — lire · modifier · retourner
         </text>
         {arrow(500, 144, 500, 168)}
 
-        {/* Modules row */}
         {box(60, 230, 180, 70, "Module 2 · Fatigue", "EAR · MAR · PERCLOS")}
-        {box(265, 230, 180, 70, "Module 3 · Gaze", "head-pose ⊕ iris fusion")}
-        {box(470, 230, 180, 70, "Module 5 · Compliance", "Seatbelt · Smoking · Phone", "#fff5f5", "#fca5a5")}
-        {box(675, 230, 180, 70, "Module 4 · DL fatigue", "3 axes · informs roadmap", "#f3f4f6", "#d1d5db")}
+        {box(265, 230, 180, 70, "Module 3 · Regard", "pose tête ⊕ fusion iris")}
+        {box(470, 230, 180, 70, "Module 5 · Conformité", "Ceinture · Tabagisme · Téléphone", "#fff5f5", "#fca5a5")}
+        {box(675, 230, 180, 70, "Module 4 · Fatigue DL", "3 axes · oriente feuille de route", "#f3f4f6", "#d1d5db")}
 
-        {/* arrows from bus to modules */}
         {arrow(150, 202, 150, 228)}
         {arrow(355, 202, 355, 228)}
         {arrow(560, 202, 560, 228)}
         {arrow(765, 202, 765, 228, true)}
 
-        {/* ComplianceWorker daemon thread label */}
         <rect x={460} y={310} width={200} height={22} rx={4} fill="#fee2e2" stroke="#fca5a5" strokeDasharray="4,4" />
-        <text x={560} y={325} textAnchor="middle" fontSize="10" fill="#7c3a05">ComplianceWorker daemon thread</text>
+        <text x={560} y={325} textAnchor="middle" fontSize="10" fill="#7c3a05">Thread démon ComplianceWorker</text>
         {arrow(560, 300, 560, 332, true)}
 
-        {/* Module 6 fusion */}
-        {box(220, 360, 560, 72, "Module 6 · Fusion + Alert Manager", "FatigueScorer (0..1, 4 bands) · AlertEngine (hysteresis · severity · cooldown · single-voice) · AudioDispatcher", "#ecfccb", "#a3e635")}
+        {box(220, 360, 560, 72, "Module 6 · Fusion + Gestionnaire d'alertes", "FatigueScorer (0..1, 4 bandes) · AlertEngine (hystérésis · sévérité · cooldown · voix unique) · AudioDispatcher", "#ecfccb", "#a3e635")}
         {arrow(150, 300, 380, 358)}
         {arrow(355, 300, 460, 358)}
         {arrow(560, 332, 560, 358, true)}
 
-        {/* Output */}
-        {box(380, 450, 240, 28, "Overlay + alerts + audio", undefined, "#fff", "hsl(var(--primary))")}
+        {box(380, 450, 240, 28, "Overlay + alertes + audio", undefined, "#fff", "hsl(var(--primary))")}
         {arrow(500, 432, 500, 448)}
       </svg>
     </div>
   );
 }
 
-/* ===================== Module 4 charts ===================== */
+/* ===================== Graphiques Module 4 ===================== */
 
 function AxisCard({
   color, badge, title, steps, note,
@@ -1616,9 +1608,9 @@ function PaperVsRealityChart() {
       })}
       <g transform={`translate(${padL}, ${H - 8})`}>
         <rect x={0} y={-7} width={9} height={9} fill="#3b82f6" rx={1} />
-        <text x={13} y={1} fontSize={8.5} fill="#333">Paper-reported</text>
-        <rect x={92} y={-7} width={9} height={9} fill="#f97316" rx={1} />
-        <text x={105} y={1} fontSize={8.5} fill="#333">Our measurements</text>
+        <text x={13} y={1} fontSize={8.5} fill="#333">Rapporté par le papier</text>
+        <rect x={108} y={-7} width={9} height={9} fill="#f97316" rx={1} />
+        <text x={121} y={1} fontSize={8.5} fill="#333">Nos mesures</text>
       </g>
     </svg>
   );
@@ -1626,11 +1618,11 @@ function PaperVsRealityChart() {
 
 function LightingOcclusionChart() {
   const conditions = [
-    { label: "Daylight", sub: "no glasses", structural: 93, cnn: 64, hybrid: 97 },
-    { label: "Daylight", sub: "glasses", structural: 90, cnn: 88, hybrid: 91 },
-    { label: "Daylight", sub: "sunglasses", structural: 93, cnn: 89, hybrid: 95 },
-    { label: "Night", sub: "no glasses", structural: 80, cnn: 75, hybrid: 86 },
-    { label: "Night", sub: "glasses", structural: 38, cnn: 72, hybrid: 82 },
+    { label: "Jour", sub: "sans lunettes", structural: 93, cnn: 64, hybrid: 97 },
+    { label: "Jour", sub: "lunettes", structural: 90, cnn: 88, hybrid: 91 },
+    { label: "Jour", sub: "soleil", structural: 93, cnn: 89, hybrid: 95 },
+    { label: "Nuit", sub: "sans lunettes", structural: 80, cnn: 75, hybrid: 86 },
+    { label: "Nuit", sub: "lunettes", structural: 38, cnn: 72, hybrid: 82 },
   ];
   const series: ("structural" | "cnn" | "hybrid")[] = ["structural", "cnn", "hybrid"];
   const colors = { structural: "#10b981", cnn: "#f97316", hybrid: "#1e3a8a" };
@@ -1675,7 +1667,7 @@ function LightingOcclusionChart() {
           <g key={s} transform={`translate(${i * 110}, 0)`}>
             <rect x={0} y={-8} width={10} height={10} fill={colors[s]} rx={1} />
             <text x={14} y={1} fontSize={9} fill="#333">
-              {s === "structural" ? "Structural" : s === "cnn" ? "Global CNN" : "Merged hybrid"}
+              {s === "structural" ? "Structurel" : s === "cnn" ? "CNN global" : "Hybride fusionné"}
             </text>
           </g>
         ))}
@@ -1687,9 +1679,9 @@ function LightingOcclusionChart() {
 function CameraAngleChart() {
   const points = [
     { label: "Frontal", sub: "0°", v: 88 },
-    { label: "Slight", sub: "±15°", v: 79 },
-    { label: "Side", sub: "±30°", v: 65 },
-    { label: "Severe", sub: "±45°", v: 47 },
+    { label: "Léger", sub: "±15°", v: 79 },
+    { label: "Latéral", sub: "±30°", v: 65 },
+    { label: "Sévère", sub: "±45°", v: 47 },
   ];
   const W = 380, H = 200, padL = 32, padR = 16, padT = 18, padB = 46;
   const innerW = W - padL - padR, innerH = H - padT - padB;
@@ -1718,7 +1710,7 @@ function CameraAngleChart() {
           <text x={xs[i]} y={H - padB + 26} fontSize={9} textAnchor="middle" fill="#888">{p.sub}</text>
         </g>
       ))}
-      <text x={padL} y={padT - 5} fontSize={9} fill="#888">Detection accuracy (%)</text>
+      <text x={padL} y={padT - 5} fontSize={9} fill="#888">Précision de détection (%)</text>
     </svg>
   );
 }
