@@ -186,7 +186,7 @@ export default function Index() {
             </div>
             <p className="section-label" style={{ justifyContent: "center" }}>ENSIA × QAREEB · FINAL DEFENSE · 2025–2026</p>
             <h1 style={{ marginBottom: 8, letterSpacing: "-0.03em" }}>
-              <span style={{ color: "hsl(var(--primary))" }}>Q-Vision</span>
+              <span style={{ color: "hsl(var(--primary))" }}>Q-Drive</span>
             </h1>
             <h2 style={{ color: "hsl(var(--text-primary))", fontWeight: 400, fontSize: "clamp(20px, 2.6vw, 30px)", marginTop: 0 }}>
               Real-time Driver Fatigue and Safety Monitoring
@@ -892,7 +892,7 @@ result_dict["alerts"]        = [...]  # ranked, deduped`}</CodeBlock>
             </div>
             <div style={{ marginTop: 12, display: "flex", gap: 12 }}>
               <div style={{ flex: 1, background: "#fff7ed", border: "1px solid #ffd6a8", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#7c3a05" }}>
-                <strong>Why this isn't on Q-Vision's RPi 4 main path.</strong> Even LiteFat (the smallest of the three) is heavier than EAR/MAR/PERCLOS, and the cross-dataset gap means we couldn't trust a black-box fatigue head in a vehicle we hadn't fine-tuned for. Module 2 + FatigueScorer remains the deployed path; the DL work informs Q-Vision's failure modes (IR, off-axis) and shapes the IR-camera roadmap.
+                <strong>Why this isn't on Q-Drive's RPi 4 main path.</strong> Even LiteFat (the smallest of the three) is heavier than EAR/MAR/PERCLOS, and the cross-dataset gap means we couldn't trust a black-box fatigue head in a vehicle we hadn't fine-tuned for. Module 2 + FatigueScorer remains the deployed path; the DL work informs Q-Drive's failure modes (IR, off-axis) and shapes the IR-camera roadmap.
               </div>
             </div>
           </div>
