@@ -186,7 +186,7 @@ export default function Index() {
             </div>
             <p className="section-label" style={{ justifyContent: "center" }}>ENSIA × QAREEB · SOUTENANCE FINALE · 2025–2026</p>
             <h1 style={{ marginBottom: 8, letterSpacing: "-0.03em" }}>
-              <span style={{ color: "hsl(var(--primary))" }}>Q-Vision</span>
+              <span style={{ color: "hsl(var(--primary))" }}>Q-Drive</span>
             </h1>
             <h2 style={{ color: "hsl(var(--text-primary))", fontWeight: 400, fontSize: "clamp(20px, 2.6vw, 30px)", marginTop: 0 }}>
               Surveillance en temps réel de la fatigue et de la sécurité du conducteur
@@ -459,7 +459,7 @@ result_dict["alerts"]        = [...]  # ranked, deduped`}</CodeBlock>
             </div>
             <div style={{ marginTop: 12, display: "flex", gap: 12 }}>
               <div style={{ flex: 1, background: "#fff7ed", border: "1px solid #ffd6a8", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#7c3a05" }}>
-                <strong>Pourquoi ce n'est pas sur le chemin principal RPi 4 de Q-Vision.</strong> Même LiteFat (le plus petit des trois) est plus lourd qu'EAR/MAR/PERCLOS, et l'écart cross-dataset signifie qu'on ne pouvait pas faire confiance à une tête de fatigue boîte noire dans un véhicule pour lequel nous n'avions pas fine-tuné. Module 2 + FatigueScorer reste le chemin déployé ; le travail DL éclaire les modes de défaillance de Q-Vision (IR, hors axe) et oriente la feuille de route caméra IR.
+                <strong>Pourquoi ce n'est pas sur le chemin principal RPi 4 de Q-Drive.</strong> Même LiteFat (le plus petit des trois) est plus lourd qu'EAR/MAR/PERCLOS, et l'écart cross-dataset signifie qu'on ne pouvait pas faire confiance à une tête de fatigue boîte noire dans un véhicule pour lequel nous n'avions pas fine-tuné. Module 2 + FatigueScorer reste le chemin déployé ; le travail DL éclaire les modes de défaillance de Q-Drive (IR, hors axe) et oriente la feuille de route caméra IR.
               </div>
             </div>
           </div>
